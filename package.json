@@ -1,0 +1,30 @@
+{
+  "name": "isegye-idol_twitch_pip",
+  "version": "0.1.0",
+  "description": "",
+  "main": "app.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "dev": "electron ."
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/kewool/ISEGYE-IDOL_twitch_pip.git"
+  },
+  "author": "kewool",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/kewool/ISEGYE-IDOL_twitch_pip/issues"
+  },
+  "homepage": "https://github.com/kewool/ISEGYE-IDOL_twitch_pip#readme",
+  "dependencies": {
+    "@twurple/api": "^5.0.18",
+    "@twurple/auth-electron": "^5.0.18",
+    "axios": "^0.26.1",
+    "cheerio": "^1.0.0-rc.10",
+    "electron": "^18.0.2",
+    "nodemon": "^2.0.15",
+    "path": "^0.12.7",
+    "url": "^0.11.0"
+  }
+}
