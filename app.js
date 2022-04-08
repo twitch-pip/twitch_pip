@@ -13,6 +13,7 @@ const authProvider = new ElectronAuthProvider({
 })
 const apiClient = new ApiClient({ authProvider });
 
+const channel_name = ["cotton__123", "lilpaaaaaa", "gosegugosegu", "vo_ine", "viichan6", "jingburger"]
 let win
 
 
@@ -21,13 +22,14 @@ function createWindow() {
         width: 1280,
         height: 1080,
         webPreferences: {
-            nodeIntegration: true,
             contextIsolation: false,
+            nodeIntegration: true
         }
     })
     
     win.loadFile(path.join(page_dir, "/main/index.html"))
     win.webContents.openDevTools()
+    
     win.on("closed", () => {
         win = null
     })
@@ -35,7 +37,6 @@ function createWindow() {
 
 app.on("ready", ()=>{
     createWindow()
-    
 })
 
 app.on("window-all-closed", () => {
@@ -46,3 +47,16 @@ app.on("activate", () => {
     if (win === null) createWindow()
 })
 
+
+ipcMain.on("getIsedolInfo", async (evt)=>{
+    let info = []
+    let res = await apiClient.users.getUsersByNames(channel_name)
+        for(var i of res){
+            let follows = await apiClient.users.getFollows({ followedUser: i.id, limit: 1 });
+            let isStream = await apiClient.streams.getStreamByUserId(i.id)
+            //let data = await apiClient.channels.getChannelInfo(i);
+            info.push({"name":i.name, "displayName":i.displayName, "profile":i.profilePictureUrl, "id":i.id, "follows":follows.total, "isStream":isStream?true:false});
+        }
+        evt.returnValue = info
+        
+})
