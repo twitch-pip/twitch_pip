@@ -3,7 +3,10 @@ const path = require("path")
 const { ElectronAuthProvider } = require("@twurple/auth-electron")
 const {ApiClient} = require("@twurple/api")
 const { app, BrowserWindow, ipcMain } = electron
+const firstRun = require("electron-first-run");
+const store = require("./store")
 
+const isFirstRun = firstRun()
 const page_dir = path.join(__dirname, "/src/pages/")
 const clientId = "m65puodpp4i8bvfrb27k1mrxr84e3z"
 const redirectUri = "http://localhost/"
@@ -13,9 +16,8 @@ const authProvider = new ElectronAuthProvider({
 })
 const apiClient = new ApiClient({ authProvider });
 
-const channel_name = ["cotton__123", "lilpaaaaaa", "gosegugosegu", "vo_ine", "viichan6", "jingburger"]
+const channel_name = ["viichan6", "gosegugosegu", "cotton__123", "lilpaaaaaa", "vo_ine", "jingburger"]
 let win
-
 
 function createWindow() {
     win = new BrowserWindow({
@@ -37,6 +39,8 @@ function createWindow() {
 
 app.on("ready", ()=>{
     createWindow()
+    if(isFirstRun) store.store.set("order", channel_name)
+    firstRun.clear()
 })
 
 app.on("window-all-closed", () => {
