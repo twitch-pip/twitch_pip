@@ -25,10 +25,11 @@ function createWindow() {
         height: 585,
         webPreferences: {
             contextIsolation: false,
-            nodeIntegration: true
-        }
+            nodeIntegration: true,
+        },
+        //resizable:false
     })
-    win.setMenu(null);
+    //win.setMenu(null);
     win.loadFile(path.join(page_dir, "/main/index.html"))
     //win.webContents.openDevTools()
     
@@ -40,7 +41,7 @@ function createWindow() {
 app.on("ready", ()=>{
     createWindow()
     if(isFirstRun) store.store.set("order", channel_name)
-    firstRun.clear()
+    //firstRun.clear()
 })
 
 app.on("window-all-closed", () => {

@@ -1,6 +1,23 @@
 const {ipcRenderer} = require("electron")
 const store = require("../../../store")
 
+
+
+function getDragAfterElement(container, y) {
+  const draggableElements = [...container.querySelectorAll('.panel_item:not(.dragging)')]
+
+  return draggableElements.reduce((closest, child) => {
+    const box = child.getBoundingClientRect()
+    const offset = y - box.top - box.height / 2
+    if (offset < 0 && offset > closest.offset) {
+      return { offset: offset, element: child }
+    } else {
+      return closest
+    }
+  }, { offset: Number.NEGATIVE_INFINITY }).element
+}
+                     
+
 function docId(element){
     return document.getElementById(element)
 }
@@ -16,6 +33,7 @@ store.store.get("order").forEach(e => {
     let div = document.createElement("div")
     div.id = e
     div.className = "panel_item"
+    div.draggable = true
     docId("panel").append(div)
 })
 
@@ -55,4 +73,31 @@ info.forEach(element => {
     else streamCircle.classList.add("stream_off")
     isStream.append(streamCircle)
     docId(element.name).append(isStream)
+})
+
+const draggables = document.querySelectorAll('.panel_item')
+const containers = document.querySelectorAll('#panel')
+
+draggables.forEach(draggable => {
+  draggable.addEventListener('dragstart', () => {
+    draggable.classList.add('dragging')
+  })
+
+  draggable.addEventListener('dragend', () => {
+    draggable.classList.remove('dragging')
+    store.store.set("order", Array.from(document.querySelectorAll('.panel_item')).map(e => e.id))
+  })
+})
+
+containers.forEach(container => {
+  container.addEventListener('dragover', e => {
+    e.preventDefault()
+    const afterElement = getDragAfterElement(container, e.clientY)
+    const draggable = document.querySelector('.dragging')
+    if (afterElement == null) {
+      container.appendChild(draggable)
+    } else {
+      container.insertBefore(draggable, afterElement)
+    }
+  })
 })
