@@ -2,7 +2,7 @@ const electron = require("electron")
 const path = require("path")
 const { ElectronAuthProvider } = require("@twurple/auth-electron")
 const {ApiClient} = require("@twurple/api")
-const { app, BrowserWindow, ipcMain } = electron
+const { app, BrowserWindow, ipcMain, Tray } = electron
 const firstRun = require("electron-first-run");
 const store = require("./store")
 
