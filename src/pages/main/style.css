@@ -2,11 +2,27 @@
     margin:0;
     padding:0;
 }
-.panel{
-
+body{
+    background-color: #0e0e10;
+    overflow: hidden;
+    padding: 20px;
+}
+#panel{
+    display:flex;
+    flex-wrap: wrap;
 }
 .panel_item{
-
+    display:flex;
+    margin:20px;
+    align-items: center;
+    user-select: none;
+    cursor: pointer;
+    width:310px;
+    justify-content: space-between;
+}
+.info{
+    display:flex;
+    align-items: center;
 }
 .profile{
     border-radius: 100%;
@@ -21,7 +37,36 @@
     border-color: #adadad;
     transition-property: all;
     transition-duration: 0.1s;
+    -webkit-user-drag: none;
 }
-.profile:hover{
-    border-width: 0.3rem;
+.panel_item:hover .profile{
+    border-width: 0.35rem;
+}
+.name{
+    margin: 0 15px 2px;
+    font-size:28px;
+    font-family: 'Noto Sans KR', sans-serif;
+    font-weight: 700;
+    color:#efeff1;
+}
+.follows{
+    margin: 0 15px;
+    font-family: 'Noto Sans KR', sans-serif;
+    font-weight: 300;
+    color:#efeff1;
+}
+.is_stream{
+    display:flex;
+    align-items: center;
+}
+.stream_circle{
+    border-radius: 100%;
+    width:20px;
+    height:20px;
+}
+.stream_on{
+    background-color: green;
+}
+.stream_off{
+    background-color: red;
 }

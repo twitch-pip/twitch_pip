@@ -8,7 +8,7 @@ const store = require("./store")
 
 const isFirstRun = firstRun()
 const page_dir = path.join(__dirname, "/src/pages/")
-const clientId = "m65puodpp4i8bvfrb27k1mrxr84e3z"
+const clientId = "m65puodpp4i8bvfrb27k1mrxr84e3z" //공개돼도 되는 값.
 const redirectUri = "http://localhost/"
 const authProvider = new ElectronAuthProvider({
     clientId,
@@ -21,16 +21,16 @@ let win
 
 function createWindow() {
     win = new BrowserWindow({
-        width: 1280,
-        height: 1080,
+        width: 756,
+        height: 585,
         webPreferences: {
             contextIsolation: false,
             nodeIntegration: true
         }
     })
-    
+    win.setMenu(null);
     win.loadFile(path.join(page_dir, "/main/index.html"))
-    win.webContents.openDevTools()
+    //win.webContents.openDevTools()
     
     win.on("closed", () => {
         win = null
