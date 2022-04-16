@@ -2,12 +2,12 @@ const electron = require("electron")
 const path = require("path")
 const { ElectronAuthProvider } = require("@twurple/auth-electron")
 const {ApiClient} = require("@twurple/api")
-const { app, BrowserWindow, ipcMain, Tray } = electron
+const { app, BrowserWindow, ipcMain, Tray, Menu } = electron
 const firstRun = require("electron-first-run");
 const store = require("./store")
 
 const isFirstRun = firstRun()
-const page_dir = path.join(__dirname, "/src/pages/")
+const page_dir = path.join(__dirname, "/src/")
 const clientId = "m65puodpp4i8bvfrb27k1mrxr84e3z" //공개돼도 되는 값.
 const redirectUri = "http://localhost/"
 const authProvider = new ElectronAuthProvider({
@@ -17,10 +17,10 @@ const authProvider = new ElectronAuthProvider({
 const apiClient = new ApiClient({ authProvider });
 
 const channel_name = ["viichan6", "gosegugosegu", "cotton__123", "lilpaaaaaa", "vo_ine", "jingburger"]
-let win
+let mainWin, tray, backWin
 
-function createWindow() {
-    win = new BrowserWindow({
+function createMainWindow() {
+    mainWin = new BrowserWindow({
         width: 756,
         height: 585,
         webPreferences: {
@@ -30,17 +30,39 @@ function createWindow() {
         //resizable:false
     })
     //win.setMenu(null);
-    win.loadFile(path.join(page_dir, "/main/index.html"))
+    mainWin.loadFile(path.join(page_dir, "pages/main/index.html"));
     //win.webContents.openDevTools()
     
-    win.on("closed", () => {
-        win = null
+    mainWin.on("closed", () => {
+        mainWin = null;
     })
 }
 
+function createBackground(){
+    backWin = new BrowserWindow({
+        show:false,
+        webPreferences: { 
+            nodeIntegration: true
+        }
+    })
+
+    backWin.loadFile(path.join(page_dir, "pages/background/index.html"));
+}
+
 app.on("ready", ()=>{
-    createWindow()
-    if(isFirstRun) store.store.set("order", channel_name)
+    createMainWindow();
+    createBackground();
+    tray = new Tray(path.join(page_dir, "assets/icon.jpg"));
+    const contextMenu = Menu.buildFromTemplate([
+        {label: "Exit", type: "normal", role: "quit"},
+    ])
+    tray.setToolTip("이세계 아이돌 트위치 방송 PIP");
+    tray.setContextMenu(contextMenu)
+    
+    tray.on("click", () => {
+        if(!mainWin) createMainWindow();
+    })
+    if(isFirstRun) store.store.set("order", channel_name);
     //firstRun.clear()
 })
 
@@ -49,9 +71,8 @@ app.on("window-all-closed", () => {
 })
 
 app.on("activate", () => {
-    if (win === null) createWindow()
+    if (backWin === null) createBackground()
 })
-
 
 ipcMain.on("getIsedolInfo", async (evt)=>{
     let info = []
