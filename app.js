@@ -5,7 +5,8 @@ const {ApiClient} = require("@twurple/api")
 const { app, BrowserWindow, ipcMain, Tray, Menu,session } = electron
 const firstRun = require("electron-first-run");
 const store = require("./store")
-require('@electron/remote/main').initialize()
+const {autoUpdater} = require("electron-updater");
+require('@electron/remote/main').initialize();
 
 const isFirstRun = firstRun()
 const page_dir = path.join(__dirname, "/src/")
@@ -35,9 +36,9 @@ function createMainWindow() {
         icon:path.join(page_dir, "assets/icon.jpg"),
         resizable:false
     })
-    mainWin.setMenu(null);
+    //mainWin.setMenu(null);
     mainWin.loadFile(path.join(page_dir, "pages/main/index.html"));
-    //win.webContents.openDevTools()
+    //mainWin.webContents.openDevTools()
     
     mainWin.on("closed", () => {
         mainWin = null;
@@ -134,6 +135,7 @@ app.on("ready", ()=>{
         if(!mainWin) createMainWindow();
     })
     if(isFirstRun) store.store.set("order", channel_name);
+    autoUpdater.checkForUpdatesAndNotify();
     //firstRun.clear()
 })
 
@@ -182,4 +184,16 @@ ipcMain.on("isStreamOffWhileOn", async (evt) => {
         evt.sender.send("isStreamOffWhileOn_reply");
         PIPWin.close();
     }
+})
+
+ipcMain.on("app_version", (evt) =>{
+    evt.sender.send("app_version_reply", {version:app.getVersion()});
+})
+
+autoUpdater.on("update-downloaded", () => {
+    mainWin.webContents.send("update_download");
+})
+
+ipcMain.on("restart_app", () => {
+    autoUpdater.quitAndInstall();
 })

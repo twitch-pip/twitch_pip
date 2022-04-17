@@ -29,12 +29,27 @@ function beautyFollows(follows){
     else return `팔로워 ${first}만명`
 }
 
+function restartApp(){
+    ipcRenderer.send("restart_app");
+}
+
 store.store.get("order").forEach(e => {
     let div = document.createElement("div")
     div.id = e
     div.className = "panel_item"
     div.draggable = true
     docId("panel").append(div)
+})
+
+ipcRenderer.send("app_version");
+ipcRenderer.on("app_version_reply", (evt, arg) => {
+    ipcRenderer.removeAllListeners("app_version_reply");
+    docId("version_num").innerText = "Version: " + arg.version;
+})
+
+ipcRenderer.on("update_downloaded", () => {
+    ipcRenderer.removeAllListeners("update_downloaded");
+    docId("version_update").innerHTML = "<a href='javascript:restartApp()'>Update is available</a>";
 })
 
 let info = ipcRenderer.sendSync("getIsedolInfo")

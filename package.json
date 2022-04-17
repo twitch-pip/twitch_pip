@@ -6,7 +6,7 @@
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
     "dev": "electron .",
-    "build":"electron-builder --windows nsis:ia32"
+    "build": "electron-builder --windows nsis:ia32"
   },
   "repository": {
     "type": "git",
@@ -25,6 +25,7 @@
     "electron": "^18.0.2",
     "electron-first-run": "^3.0.0",
     "electron-store": "^8.0.1",
+    "electron-updater": "^5.0.1",
     "path": "^0.12.7"
   },
   "devDependencies": {

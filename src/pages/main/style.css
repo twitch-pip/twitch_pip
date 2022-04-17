@@ -70,9 +70,22 @@ body{
 .stream_off{
     background-color: red;
 }
+#version{
+    position:fixed;
+    bottom:5px;
+    left:10px;
+    color:#efeff1;
+    display:flex;
+}
+#version_num{
+    margin-right:10px;
+}
 .developed{
     position:fixed;
-    bottom:10px;
+    bottom:5px;
     right:10px;
-    color:#efeff1
+    color:#efeff1;
+}
+a:link{
+    color: #038cfc;
 }
