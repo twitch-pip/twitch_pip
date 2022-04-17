@@ -191,7 +191,7 @@ ipcMain.on("app_version", (evt) =>{
 })
 
 autoUpdater.on("update-downloaded", () => {
-    mainWin.webContents.send("update_download");
+    mainWin.webContents.send("update_downloaded");
 })
 
 ipcMain.on("restart_app", () => {
