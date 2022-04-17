@@ -74,7 +74,6 @@ function createPIPWin(){
         params.set('referrer', 'https://localhost/');
     
         var redirectURL = 'https://embed.twitch.tv/?' + params.toString();
-        console.log('Adjust to', redirectURL);
     
         cb({
           cancel: false,
@@ -91,8 +90,6 @@ function createPIPWin(){
         ]
       }, (details, cb) => {
         var responseHeaders = details.responseHeaders;
-    
-        console.log('headers', details.url, responseHeaders);
     
         delete responseHeaders['Content-Security-Policy'];
         //console.log(responseHeaders);
