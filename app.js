@@ -2,7 +2,7 @@ const electron = require("electron")
 const path = require("path")
 const { ElectronAuthProvider } = require("@twurple/auth-electron")
 const {ApiClient} = require("@twurple/api")
-const { app, BrowserWindow, ipcMain, Tray, Menu } = electron
+const { app, BrowserWindow, ipcMain, Tray, Menu,session } = electron
 const firstRun = require("electron-first-run");
 const store = require("./store")
 require('@electron/remote/main').initialize()
@@ -35,7 +35,7 @@ function createMainWindow() {
         icon:path.join(page_dir, "assets/icon.jpg"),
         resizable:false
     })
-    //win.setMenu(null);
+    mainWin.setMenu(null);
     mainWin.loadFile(path.join(page_dir, "pages/main/index.html"));
     //win.webContents.openDevTools()
     
@@ -46,7 +46,7 @@ function createMainWindow() {
 
 function createBackground(){
     backWin = new BrowserWindow({
-        //show:false,
+        show:false,
         webPreferences: { 
             contextIsolation: false,
             nodeIntegration: true,
@@ -58,6 +58,50 @@ function createBackground(){
 }
 
 function createPIPWin(){
+    session.defaultSession.webRequest.onBeforeRequest({
+        urls: [
+          'https://embed.twitch.tv/*channel=*'
+        ]
+      }, (details, cb) => {
+        var redirectURL = details.url;
+    
+        var params = new URLSearchParams(redirectURL.replace('https://embed.twitch.tv/',''));
+        if (params.get('parent') != '') {
+            cb({});
+            return;
+        }
+        params.set('parent', 'locahost');
+        params.set('referrer', 'https://localhost/');
+    
+        var redirectURL = 'https://embed.twitch.tv/?' + params.toString();
+        console.log('Adjust to', redirectURL);
+    
+        cb({
+          cancel: false,
+          redirectURL
+        });
+      });
+    
+      // works for dumb iFrames
+      session.defaultSession.webRequest.onHeadersReceived({
+        urls: [
+          'https://www.twitch.tv/*',
+          'https://player.twitch.tv/*',
+          'https://embed.twitch.tv/*'
+        ]
+      }, (details, cb) => {
+        var responseHeaders = details.responseHeaders;
+    
+        console.log('headers', details.url, responseHeaders);
+    
+        delete responseHeaders['Content-Security-Policy'];
+        //console.log(responseHeaders);
+    
+        cb({
+          cancel: false,
+          responseHeaders
+        });
+      });
     PIPWin = new BrowserWindow({
         width:480,
         height:270,
@@ -67,6 +111,9 @@ function createPIPWin(){
         },
         frame:false,
         resizable:false,
+        alwaysOnTop:true,
+        x: 1390,
+        y: 710
     })
     require("@electron/remote/main").enable(global.PIPWin.webContents)
     PIPWin.loadFile(path.join(page_dir, "pages/pip/index.html"))
@@ -89,7 +136,7 @@ app.on("ready", ()=>{
         if(!mainWin) createMainWindow();
     })
     if(isFirstRun) store.store.set("order", channel_name);
-    firstRun.clear()
+    //firstRun.clear()
 })
 
 app.on("window-all-closed", () => {
