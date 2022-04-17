@@ -1,0 +1,22 @@
+*{
+    margin: 0;
+    padding:0;
+}
+
+html, body{
+    height:100%;
+}
+
+body{
+    background-color: #0e0e10;
+}
+
+.panel{
+    -webkit-app-region: drag;
+    width: 100%;
+    height: 100%;
+}
+
+button{
+    -webkit-app-region: no-drag;
+}

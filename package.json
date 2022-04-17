@@ -18,6 +18,7 @@
   },
   "homepage": "https://github.com/kewool/ISEGYE-IDOL_twitch_pip#readme",
   "dependencies": {
+    "@electron/remote": "^2.0.8",
     "@twurple/api": "^5.0.18",
     "@twurple/auth-electron": "^5.0.18",
     "electron": "^18.0.2",

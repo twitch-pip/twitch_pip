@@ -5,6 +5,7 @@ const {ApiClient} = require("@twurple/api")
 const { app, BrowserWindow, ipcMain, Tray, Menu } = electron
 const firstRun = require("electron-first-run");
 const store = require("./store")
+require('@electron/remote/main').initialize()
 
 const isFirstRun = firstRun()
 const page_dir = path.join(__dirname, "/src/")
@@ -17,7 +18,10 @@ const authProvider = new ElectronAuthProvider({
 const apiClient = new ApiClient({ authProvider });
 
 const channel_name = ["viichan6", "gosegugosegu", "cotton__123", "lilpaaaaaa", "vo_ine", "jingburger"]
-let mainWin, tray, backWin
+let mainWin, tray
+
+global.backWin = null
+global.PIPWin = null
 
 function createMainWindow() {
     mainWin = new BrowserWindow({
@@ -26,8 +30,10 @@ function createMainWindow() {
         webPreferences: {
             contextIsolation: false,
             nodeIntegration: true,
+            backgroundColor:"#0e0e10"
         },
-        //resizable:false
+        icon:path.join(page_dir, "assets/icon.jpg"),
+        resizable:false
     })
     //win.setMenu(null);
     mainWin.loadFile(path.join(page_dir, "pages/main/index.html"));
@@ -40,13 +46,33 @@ function createMainWindow() {
 
 function createBackground(){
     backWin = new BrowserWindow({
-        show:false,
+        //show:false,
         webPreferences: { 
-            nodeIntegration: true
+            contextIsolation: false,
+            nodeIntegration: true,
         }
     })
-
+    
+    backWin.webContents.openDevTools()
     backWin.loadFile(path.join(page_dir, "pages/background/index.html"));
+}
+
+function createPIPWin(){
+    PIPWin = new BrowserWindow({
+        width:480,
+        height:270,
+        webPreferences: { 
+            contextIsolation: false,
+            nodeIntegration: true,
+        },
+        frame:false,
+        resizable:false,
+    })
+    require("@electron/remote/main").enable(global.PIPWin.webContents)
+    PIPWin.loadFile(path.join(page_dir, "pages/pip/index.html"))
+    PIPWin.on("closed", () => {
+        PIPWin = null;
+    })
 }
 
 app.on("ready", ()=>{
@@ -63,7 +89,7 @@ app.on("ready", ()=>{
         if(!mainWin) createMainWindow();
     })
     if(isFirstRun) store.store.set("order", channel_name);
-    //firstRun.clear()
+    firstRun.clear()
 })
 
 app.on("window-all-closed", () => {
@@ -71,7 +97,8 @@ app.on("window-all-closed", () => {
 })
 
 app.on("activate", () => {
-    if (backWin === null) createBackground()
+    if (backWin === null) createBackground();
+    if (mainWin === null) createMainWindow();
 })
 
 ipcMain.on("getIsedolInfo", async (evt)=>{
@@ -84,5 +111,30 @@ ipcMain.on("getIsedolInfo", async (evt)=>{
             info.push({"name":i.name, "displayName":i.displayName, "profile":i.profilePictureUrl, "id":i.id, "follows":follows.total, "isStream":isStream?true:false});
         }
         evt.returnValue = info
-        
+})
+
+ipcMain.on("getOnePickStream", async (evt)=>{
+    let isStream = await apiClient.streams.getStreamByUserName(store.store.get("order")[0])?true:false;
+    if(isStream){
+        createPIPWin();
+        evt.sender.send("getOnePickStream_reply", isStream)
+    }
+})
+
+ipcMain.on("closePIP", (evt) =>{
+    evt.sender.send("getOnePickStream_reply", false)
+    PIPWin.close();
+})
+
+ipcMain.on("isStreamOff", async (evt) => {
+    let isStream = await apiClient.streams.getStreamByUserName(store.store.get("order")[0])?true:false;
+    if(!isStream) evt.sender.send("isStreamOff_reply");
+})
+
+ipcMain.on("isStreamOffWhileOn", async (evt) => {
+    let isStream = await apiClient.streams.getStreamByUserName(store.store.get("order")[0])?true:false;
+    if(!isStream){
+        evt.sender.send("isStreamOffWhileOn_reply");
+        PIPWin.close();
+    }
 })
