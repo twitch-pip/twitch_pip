@@ -6,7 +6,8 @@
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
     "dev": "electron .",
-    "build": "electron-builder --windows nsis:ia32"
+    "build": "electron-builder --windows nsis:x64",
+    "buildmac":"electron-builder build --mac"
   },
   "repository": {
     "type": "git",
@@ -19,16 +20,58 @@
   },
   "homepage": "https://github.com/kewool/ISEGYE-IDOL_twitch_pip#readme",
   "dependencies": {
-    "@electron/remote": "^2.0.8",
-    "@twurple/api": "^5.0.18",
-    "@twurple/auth-electron": "^5.0.18",
-    "electron": "^18.0.2",
+    "@twurple/api": "^5.0.19",
+    "@twurple/auth": "^5.0.19",
+    "@twurple/auth-electron": "^5.0.19",
+    "path": "^0.12.7",
     "electron-first-run": "^3.0.0",
     "electron-store": "^8.0.1",
     "electron-updater": "^5.0.1",
-    "path": "^0.12.7"
+    "@electron/remote": "^2.0.8"
   },
   "devDependencies": {
+    "electron": "^18.0.2",
     "electron-builder": "^23.0.3"
+  },
+  "build": {
+    "productName": "ISEGYE-IDOL Twitch PIP",
+    "appId": "com.electron.ISEDOLPIP",
+    "asar": true,
+    "protocols": {
+      "name": "ISEGYE-IDOL Twitch PIP",
+      "schemes": [
+        "ISEGYE-IDOL Twitch PIP"
+      ]
+    },
+    "win": {
+      "target": [
+        "zip",
+        "nsis"
+      ],
+      "icon": "/src/assets/icon2.jpg"
+    },
+    "mac":{
+      "target":[
+        "default"
+      ],
+      "icon": "/src/assets/icon2.jpg"
+    },
+    "dmg":{
+      "title":"ISEGYE-IDOL Twitch PIP",
+      "icon": "/src/assets/icon2.jpg"
+    },
+    "nsis": {
+      "oneClick": false,
+      "allowToChangeInstallationDirectory": true,
+      "shortcutName": "이세계아이돌 트위치 PIP",
+      "include": "build/startup.nsh",
+      "deleteAppDataOnUninstall":true,
+      "perMachine":true
+    },
+    "directories": {
+      "buildResources": "./resources/installer/",
+      "output": "./dist/",
+      "app": "."
+    }
   }
 }
