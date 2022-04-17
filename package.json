@@ -5,7 +5,8 @@
   "main": "app.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
-    "dev": "electron ."
+    "dev": "electron .",
+    "build":"electron-builder --windows nsis:ia32"
   },
   "repository": {
     "type": "git",
@@ -25,5 +26,8 @@
     "electron-first-run": "^3.0.0",
     "electron-store": "^8.0.1",
     "path": "^0.12.7"
+  },
+  "devDependencies": {
+    "electron-builder": "^23.0.3"
   }
 }

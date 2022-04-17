@@ -70,3 +70,9 @@ body{
 .stream_off{
     background-color: red;
 }
+.developed{
+    position:fixed;
+    bottom:10px;
+    right:10px;
+    color:#efeff1
+}

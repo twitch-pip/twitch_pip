@@ -112,6 +112,7 @@ function createPIPWin(){
         x: 1390,
         y: 710
     })
+    PIPWin.setMenu(null);
     require("@electron/remote/main").enable(global.PIPWin.webContents)
     PIPWin.loadFile(path.join(page_dir, "pages/pip/index.html"))
     PIPWin.on("closed", () => {
