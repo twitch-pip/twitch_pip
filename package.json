@@ -20,11 +20,9 @@
   },
   "homepage": "https://github.com/kewool/ISEGYE-IDOL_twitch_pip#readme",
   "dependencies": {
-    "@electron/remote": "^2.0.8",
     "@twurple/api": "^5.0.19",
     "@twurple/auth": "^5.0.19",
     "@twurple/auth-electron": "^5.0.19",
-    "electron-first-run": "^3.0.0",
     "electron-store": "^8.0.1",
     "electron-updater": "^5.0.1",
     "path": "^0.12.7"
@@ -35,11 +33,13 @@
     "electron-log": "^4.4.6"
   },
   "build": {
-    "publish": [{
-      "provider": "github",
-      "owner": "kewool",
-      "repo": "ISEGYE-IDOL_twitch_pip"
-    }],
+    "publish": [
+      {
+        "provider": "github",
+        "owner": "kewool",
+        "repo": "ISEGYE-IDOL_twitch_pip"
+      }
+    ],
     "productName": "ISEGYE-IDOL Twitch PIP",
     "appId": "com.electron.ISEDOLPIP",
     "asar": true,

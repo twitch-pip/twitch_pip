@@ -1,7 +1,6 @@
 const {ipcRenderer} = require("electron")
-const remote = require('@electron/remote')
+const store = require("../../../store")
 
 function window_close() {
-    remote.getGlobal("backWin").webContents.send("PIPClose")
     ipcRenderer.send("closePIP")
 }

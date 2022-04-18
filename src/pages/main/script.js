@@ -29,6 +29,10 @@ function beautyFollows(follows){
     else return `팔로워 ${first}만명`
 }
 
+function openSelect(id){
+    ipcRenderer.send("openSelectPIP", id)
+}
+
 function restartApp(){
     ipcRenderer.send("restart_app");
 }
@@ -38,7 +42,10 @@ store.store.get("order").forEach(e => {
     div.id = e
     div.className = "panel_item"
     div.draggable = true
-    docId("panel").append(div)
+    div.addEventListener("click", ()=>{
+        openSelect(e);
+    })
+    docId("panel").append(div);
 })
 
 ipcRenderer.send("app_version");

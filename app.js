@@ -3,12 +3,9 @@ const path = require("path")
 const { ElectronAuthProvider } = require("@twurple/auth-electron")
 const {ApiClient} = require("@twurple/api")
 const { app, BrowserWindow, ipcMain, Tray, Menu,session } = electron
-const firstRun = require("electron-first-run");
 const store = require("./store")
 const {autoUpdater} = require("electron-updater");
-require('@electron/remote/main').initialize();
 
-const isFirstRun = firstRun()
 const page_dir = path.join(__dirname, "/src/")
 const clientId = "m65puodpp4i8bvfrb27k1mrxr84e3z" //공개돼도 되는 값.
 const redirectUri = "http://localhost/"
@@ -19,10 +16,8 @@ const authProvider = new ElectronAuthProvider({
 const apiClient = new ApiClient({ authProvider });
 
 const channel_name = ["viichan6", "gosegugosegu", "cotton__123", "lilpaaaaaa", "vo_ine", "jingburger"]
-let mainWin, tray
+let mainWin, tray, backWin, PIPWin
 
-global.backWin = null
-global.PIPWin = null
 
 function createMainWindow() {
     mainWin = new BrowserWindow({
@@ -58,7 +53,7 @@ function createBackground(){
     backWin.loadFile(path.join(page_dir, "pages/background/index.html"));
 }
 
-function createPIPWin(){
+function createPIPWin(arg){
     session.defaultSession.webRequest.onBeforeRequest({
         urls: [
           'https://embed.twitch.tv/*channel=*'
@@ -100,6 +95,7 @@ function createPIPWin(){
           responseHeaders
         });
       });
+    
     PIPWin = new BrowserWindow({
         width:480,
         height:270,
@@ -114,8 +110,7 @@ function createPIPWin(){
         y: 710
     })
     PIPWin.setMenu(null);
-    require("@electron/remote/main").enable(global.PIPWin.webContents)
-    PIPWin.loadFile(path.join(page_dir, "pages/pip/index.html"))
+    PIPWin.loadURL("file://" + path.join(page_dir, `pages/pip/index.html#${arg}`))
     PIPWin.on("closed", () => {
         PIPWin = null;
     })
@@ -134,9 +129,10 @@ app.on("ready", ()=>{
     tray.on("click", () => {
         if(!mainWin) createMainWindow();
     })
-    if(isFirstRun) store.store.set("order", channel_name);
+    
+    if(!store.store.get("order")) store.store.set("order", channel_name);
     autoUpdater.checkForUpdates();
-    //firstRun.clear()
+    //store.store.delete("order");
 })
 
 app.on("window-all-closed", () => {
@@ -163,13 +159,27 @@ ipcMain.on("getIsedolInfo", async (evt)=>{
 ipcMain.on("getOnePickStream", async (evt)=>{
     let isStream = await apiClient.streams.getStreamByUserName(store.store.get("order")[0])?true:false;
     if(isStream){
-        createPIPWin();
+        if(PIPWin) {
+            PIPWin.close();
+            PIPWin = null;
+        }
+        createPIPWin(store.store.get("order")[0]);
         evt.sender.send("getOnePickStream_reply", isStream)
     }
 })
 
+ipcMain.on("openSelectPIP", (evt, arg)=>{
+    if(PIPWin) {
+        PIPWin.close();
+        PIPWin = null;
+    }
+    createPIPWin(arg);
+    backWin.webContents.send("selectOtherStream");
+
+})
+
 ipcMain.on("closePIP", (evt) =>{
-    evt.sender.send("getOnePickStream_reply", false)
+    backWin.webContents.send("PIPClose")
     PIPWin.close();
 })
 
@@ -181,7 +191,7 @@ ipcMain.on("isStreamOff", async (evt) => {
 ipcMain.on("isStreamOffWhileOn", async (evt) => {
     let isStream = await apiClient.streams.getStreamByUserName(store.store.get("order")[0])?true:false;
     if(!isStream){
-        evt.sender.send("isStreamOffWhileOn_reply");
+        evt.sender.send("isStreamOff_reply");
         PIPWin.close();
     }
 })
