@@ -18,10 +18,11 @@
     </div>
     <script src= "https://player.twitch.tv/js/embed/v1.js"></script>
     <script type="text/javascript">
+        const store = require("../../../store")
         var options = {
             width: 480,
             height: 270,
-            channel: "lilpaaaaaa",
+            channel: store.store.get("order")[0],
             parent: ["localhost"]
         };
         var player = new Twitch.Player("twitch", options);

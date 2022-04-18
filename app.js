@@ -8,6 +8,10 @@ const store = require("./store")
 const {autoUpdater} = require("electron-updater");
 require('@electron/remote/main').initialize();
 
+const log = require('electron-log');
+autoUpdater.logger = log;
+autoUpdater.logger.transports.file.level = 'info';
+
 const isFirstRun = firstRun()
 const page_dir = path.join(__dirname, "/src/")
 const clientId = "m65puodpp4i8bvfrb27k1mrxr84e3z" //공개돼도 되는 값.
@@ -36,7 +40,7 @@ function createMainWindow() {
         icon:path.join(page_dir, "assets/icon.jpg"),
         resizable:false
     })
-    mainWin.setMenu(null);
+    //mainWin.setMenu(null);
     mainWin.loadFile(path.join(page_dir, "pages/main/index.html"));
     //mainWin.webContents.openDevTools()
     
@@ -135,7 +139,7 @@ app.on("ready", ()=>{
         if(!mainWin) createMainWindow();
     })
     if(isFirstRun) store.store.set("order", channel_name);
-    autoUpdater.checkForUpdatesAndNotify();
+    autoUpdater.checkForUpdates();
     //firstRun.clear()
 })
 

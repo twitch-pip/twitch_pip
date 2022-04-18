@@ -1,17 +1,17 @@
 {
   "name": "isegye-idol_twitch_pip",
-  "version": "0.1.1",
+  "version": "0.1.0",
   "description": "",
   "main": "app.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
     "dev": "electron .",
-    "build": "electron-builder --windows nsis:x64",
-    "buildmac":"electron-builder build --mac"
+    "build": "electron-builder --windows nsis:x64 -p always",
+    "buildmac": "electron-builder build --mac"
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/kewool/ISEGYE-IDOL_twitch_pip.git"
+    "url": "https://github.com/kewool/ISEGYE-IDOL_twitch_pip.git"
   },
   "author": "kewool",
   "license": "ISC",
@@ -20,20 +20,26 @@
   },
   "homepage": "https://github.com/kewool/ISEGYE-IDOL_twitch_pip#readme",
   "dependencies": {
+    "@electron/remote": "^2.0.8",
     "@twurple/api": "^5.0.19",
     "@twurple/auth": "^5.0.19",
     "@twurple/auth-electron": "^5.0.19",
-    "path": "^0.12.7",
     "electron-first-run": "^3.0.0",
     "electron-store": "^8.0.1",
     "electron-updater": "^5.0.1",
-    "@electron/remote": "^2.0.8"
+    "path": "^0.12.7"
   },
   "devDependencies": {
     "electron": "^18.0.2",
-    "electron-builder": "^23.0.3"
+    "electron-builder": "^23.0.3",
+    "electron-log": "^4.4.6"
   },
   "build": {
+    "publish": [{
+      "provider": "github",
+      "owner": "kewool",
+      "repo": "ISEGYE-IDOL_twitch_pip"
+    }],
     "productName": "ISEGYE-IDOL Twitch PIP",
     "appId": "com.electron.ISEDOLPIP",
     "asar": true,
@@ -45,19 +51,18 @@
     },
     "win": {
       "target": [
-        "zip",
         "nsis"
       ],
       "icon": "/src/assets/icon2.jpg"
     },
-    "mac":{
-      "target":[
+    "mac": {
+      "target": [
         "default"
       ],
       "icon": "/src/assets/icon2.jpg"
     },
-    "dmg":{
-      "title":"ISEGYE-IDOL Twitch PIP",
+    "dmg": {
+      "title": "ISEGYE-IDOL Twitch PIP",
       "icon": "/src/assets/icon2.jpg"
     },
     "nsis": {
@@ -65,8 +70,8 @@
       "allowToChangeInstallationDirectory": true,
       "shortcutName": "이세계아이돌 트위치 PIP",
       "include": "build/startup.nsh",
-      "deleteAppDataOnUninstall":true,
-      "perMachine":true
+      "deleteAppDataOnUninstall": true,
+      "perMachine": true
     },
     "directories": {
       "buildResources": "./resources/installer/",
