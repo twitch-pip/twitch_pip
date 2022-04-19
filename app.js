@@ -35,7 +35,7 @@ function createMainWindow() {
     mainWin.setMenu(null);
     mainWin.loadFile(path.join(page_dir, "pages/main/index.html"));
     //mainWin.webContents.openDevTools()
-    
+    autoUpdater.checkForUpdates();
     mainWin.on("closed", () => {
         mainWin = null;
     })
@@ -105,12 +105,12 @@ function createPIPWin(url){
             nodeIntegration: true,
         },
         frame:false,
-        //resizable:false,
+        resizable:false,
         alwaysOnTop:true,
         x: 1390,
         y: 710
     })
-    //PIPWin.setMenu(null);
+    PIPWin.setMenu(null);
     PIPWin.loadURL("file://" + path.join(page_dir, `pages/pip/index.html?url=${url}`))
     
 }
@@ -130,7 +130,6 @@ app.on("ready", ()=>{
     })
     
     if(!store.store.get("order")) store.store.set("order", channel_name);
-    autoUpdater.checkForUpdates();
     //store.store.delete("order");
 })
 
