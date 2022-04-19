@@ -111,9 +111,7 @@ function createPIPWin(arg){
     })
     PIPWin.setMenu(null);
     PIPWin.loadURL("file://" + path.join(page_dir, `pages/pip/index.html#${arg}`))
-    PIPWin.on("closed", () => {
-        PIPWin = null;
-    })
+    
 }
 
 app.on("ready", ()=>{
@@ -161,7 +159,6 @@ ipcMain.on("getOnePickStream", async (evt)=>{
     if(isStream){
         if(PIPWin) {
             PIPWin.close();
-            PIPWin = null;
         }
         createPIPWin(store.store.get("order")[0]);
         evt.sender.send("getOnePickStream_reply", isStream)
@@ -171,7 +168,6 @@ ipcMain.on("getOnePickStream", async (evt)=>{
 ipcMain.on("openSelectPIP", (evt, arg)=>{
     if(PIPWin) {
         PIPWin.close();
-        PIPWin = null;
     }
     createPIPWin(arg);
     backWin.webContents.send("selectOtherStream");

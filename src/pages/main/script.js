@@ -25,7 +25,7 @@ function docId(element){
 function beautyFollows(follows){
     let first = `${(follows+"").substring(0, (follows+"").length - 4)}`
     let second = `${(follows+"").substring((follows+"").length - 4, (follows+"").length - 3)}`
-    if(second*1)return `팔로워 ${first}.${second}만명` 
+    if(second*1)return `팔로워 ${first}.${second}만명`
     else return `팔로워 ${first}만명`
 }
 
