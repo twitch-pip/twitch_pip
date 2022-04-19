@@ -159,6 +159,7 @@ ipcMain.on("getOnePickStream", async (evt)=>{
     if(isStream){
         if(PIPWin) {
             PIPWin.close();
+            PIPWin = null;
         }
         createPIPWin(store.store.get("order")[0]);
         evt.sender.send("getOnePickStream_reply", isStream)
@@ -168,6 +169,7 @@ ipcMain.on("getOnePickStream", async (evt)=>{
 ipcMain.on("openSelectPIP", (evt, arg)=>{
     if(PIPWin) {
         PIPWin.close();
+        PIPWin = null;
     }
     createPIPWin(arg);
     backWin.webContents.send("selectOtherStream");
@@ -177,6 +179,7 @@ ipcMain.on("openSelectPIP", (evt, arg)=>{
 ipcMain.on("closePIP", (evt) =>{
     backWin.webContents.send("PIPClose")
     PIPWin.close();
+    PIPWin = null;
 })
 
 ipcMain.on("isStreamOff", async (evt) => {
