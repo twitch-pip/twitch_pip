@@ -65,10 +65,10 @@ body{
     height:20px;
 }
 .stream_on{
-    background-color: green;
+    background-color: red;
 }
 .stream_off{
-    background-color: red;
+    background-color: gray;
 }
 #version{
     position:fixed;
