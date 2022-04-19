@@ -5,6 +5,7 @@ const {ApiClient} = require("@twurple/api")
 const { app, BrowserWindow, ipcMain, Tray, Menu,session } = electron
 const store = require("./store")
 const {autoUpdater} = require("electron-updater");
+const twitch = require("twitch-m3u8")
 
 const page_dir = path.join(__dirname, "/src/")
 const clientId = "m65puodpp4i8bvfrb27k1mrxr84e3z" //공개돼도 되는 값.
@@ -53,9 +54,9 @@ function createBackground(){
     backWin.loadFile(path.join(page_dir, "pages/background/index.html"));
 }
 
-function createPIPWin(arg){
+function createPIPWin(url){
     session.defaultSession.webRequest.onBeforeRequest({
-        urls: [
+        urls: [ 
           'https://embed.twitch.tv/*channel=*'
         ]
       }, (details, cb) => {
@@ -104,13 +105,13 @@ function createPIPWin(arg){
             nodeIntegration: true,
         },
         frame:false,
-        resizable:false,
+        //resizable:false,
         alwaysOnTop:true,
         x: 1390,
         y: 710
     })
-    PIPWin.setMenu(null);
-    PIPWin.loadURL("file://" + path.join(page_dir, `pages/pip/index.html#${arg}`))
+    //PIPWin.setMenu(null);
+    PIPWin.loadURL("file://" + path.join(page_dir, `pages/pip/index.html?url=${url}`))
     
 }
 
@@ -151,6 +152,7 @@ ipcMain.on("getIsedolInfo", async (evt)=>{
             //let data = await apiClient.channels.getChannelInfo(i);
             info.push({"name":i.name, "displayName":i.displayName, "profile":i.profilePictureUrl, "id":i.id, "follows":follows.total, "isStream":isStream?true:false});
         }
+        backWin.webContents.send("login");
         evt.returnValue = info
 })
 
@@ -161,19 +163,22 @@ ipcMain.on("getOnePickStream", async (evt)=>{
             PIPWin.close();
             PIPWin = null;
         }
-        createPIPWin(store.store.get("order")[0]);
+        await twitch.getStream(store.store.get("order")[0]).then(res => {
+            createPIPWin(res[1].url);
+        })
         evt.sender.send("getOnePickStream_reply", isStream)
     }
 })
 
-ipcMain.on("openSelectPIP", (evt, arg)=>{
+ipcMain.on("openSelectPIP", async (evt, arg)=>{
     if(PIPWin) {
         PIPWin.close();
         PIPWin = null;
     }
-    createPIPWin(arg);
+    await twitch.getStream(arg).then(res => {
+        createPIPWin(res[1].url);
+    })
     backWin.webContents.send("selectOtherStream");
-
 })
 
 ipcMain.on("closePIP", (evt) =>{

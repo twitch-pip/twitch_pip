@@ -2,15 +2,20 @@ const {ipcRenderer} = require("electron")
 
 let getOnePickStream;
 let flag = false;
+let login = false;
 
 function setGetOnePick(){
     getOnePickStream = setInterval(()=>{
-        ipcRenderer.send("getOnePickStream")
+        if(login) ipcRenderer.send("getOnePickStream")
     }, 30000)
 }
 setGetOnePick();
 
-ipcRenderer.on("getOnePickStream_reply", (evt) => {
+ipcRenderer.on("login", ()=>{
+    login = true;
+})
+
+ipcRenderer.on("getOnePickStream_reply", () => {
     flag = true;
     clearInterval(getOnePickStream);
     getOnePickStream = setInterval(()=>{
@@ -18,18 +23,18 @@ ipcRenderer.on("getOnePickStream_reply", (evt) => {
     }, 30000)
 })
 
-ipcRenderer.on("PIPClose", (evt) => {
+ipcRenderer.on("PIPClose", () => {
     clearInterval(getOnePickStream)
     getOnePickStream = setInterval(()=>{
         ipcRenderer.send("isStreamOff");
     },30000)
 })
-ipcRenderer.on("isStreamOff_reply", (evt) => {
+ipcRenderer.on("isStreamOff_reply", () => {
     flag = false;
     clearInterval(getOnePickStream);
     setGetOnePick();
 })
-ipcRenderer.on("selectOtherStream", (evt) => {
+ipcRenderer.on("selectOtherStream", () => {
     if(flag) {
         clearInterval(getOnePickStream);
         getOnePickStream = setInterval(()=>{

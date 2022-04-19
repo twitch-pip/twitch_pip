@@ -8,25 +8,15 @@
     <title>Document</title>
     <link rel="stylesheet" type="text/css" href="style.css">
     <script src="script.js" defer></script>
+    <script src="https://cdn.jsdelivr.net/npm/hls.js@latest"></script>
 </head>
 
 <body>
-    <div class="panel">
-        <div id="twitch"></div>
+    <div id="panel" class="panel">
         <img src="../../assets/close.svg" id="close" onclick="window_close()">
         
     </div>
-    <script src= "https://player.twitch.tv/js/embed/v1.js"></script>
-    <script type="text/javascript">
-        var options = {
-            width: 480,
-            height: 270,
-            channel: location.href.split("#")[1],
-            parent: ["localhost"]
-        };
-        var player = new Twitch.Player("twitch", options);
-        player.setVolume(0.4);
-    </script>
+    
 </body>
 
 </html>
