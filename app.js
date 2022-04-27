@@ -22,7 +22,7 @@ let mainWin, tray, backWin, PIPWin
 
 function createMainWindow() {
     mainWin = new BrowserWindow({
-        width: 756,
+        width: store.store.get("width")|756,
         height: 585,
         webPreferences: {
             contextIsolation: false,
@@ -106,13 +106,14 @@ function createPIPWin(url){
         },
         frame:false,
         resizable:false,
-        alwaysOnTop:true,
+        skipTaskbar: true,
         x: 1390,
         y: 710
     })
     PIPWin.setMenu(null);
     PIPWin.loadURL("file://" + path.join(page_dir, `pages/pip/index.html?url=${url}`))
-    
+    PIPWin.setAlwaysOnTop(true, "screen-saver");
+    PIPWin.setVisibleOnAllWorkspaces(true);
 }
 
 app.on("ready", ()=>{
@@ -129,8 +130,8 @@ app.on("ready", ()=>{
         if(!mainWin) createMainWindow();
     })
     
+    store.store.delete("order");
     if(!store.store.get("order")) store.store.set("order", channel_name);
-    //store.store.delete("order");
 })
 
 app.on("window-all-closed", () => {
