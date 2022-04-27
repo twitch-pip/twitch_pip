@@ -34,11 +34,15 @@ function createMainWindow() {
     })
     mainWin.setMenu(null);
     mainWin.loadFile(path.join(page_dir, "pages/main/index.html"));
-    //mainWin.webContents.openDevTools()
+    mainWin.webContents.openDevTools()
     autoUpdater.checkForUpdates();
     mainWin.on("closed", () => {
         mainWin = null;
     })
+    mainWin.webContents.on('new-window', function(e, url) {
+        e.preventDefault();
+        require('electron').shell.openExternal(url);
+    });
 }
 
 function createBackground(){
