@@ -16,7 +16,7 @@ const authProvider = new ElectronAuthProvider({
 });
 const apiClient = new ApiClient({ authProvider });
 
-const channel_name = ["kimdduddi", "viichan6", "gosegugosegu", "cotton__123", "lilpaaaaaa", "vo_ine", "jingburger"];
+const channel_name = ["viichan6", "gosegugosegu", "cotton__123", "lilpaaaaaa", "vo_ine", "jingburger"];
 let mainWin;
 let tray;
 let backWin;
@@ -95,7 +95,7 @@ app.on("ready", () => {
         if (!mainWin) createMainWindow();
     });
 
-    store.store.delete("order");
+    //store.store.delete("order");
     if (!store.store.get("order")) store.store.set("order", channel_name);
 });
 
