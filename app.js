@@ -136,14 +136,17 @@ ipcMain.on("getOnePickStream", async (evt) => {
 });
 
 ipcMain.on("openSelectPIP", async (evt, arg) => {
-    if (PIPWin) {
-        PIPWin.close();
-        PIPWin = null;
+    const isStream = await apiClient.streams.getStreamByUserName(arg) ? true : false;
+    if(isStream){
+        if (PIPWin) {
+            PIPWin.close();
+            PIPWin = null;
+        }
+        await twitch.getStream(arg).then((res) => {
+            createPIPWin(res[ 1 ].url);
+        });
+        backWin.webContents.send("selectOtherStream");
     }
-    await twitch.getStream(arg).then((res) => {
-        createPIPWin(res[ 1 ].url);
-    });
-    backWin.webContents.send("selectOtherStream");
 });
 
 ipcMain.on("closePIP", (evt) => {
@@ -162,6 +165,7 @@ ipcMain.on("isStreamOffWhileOn", async (evt) => {
     if (!isStream) {
         evt.sender.send("isStreamOff_reply");
         PIPWin.close();
+        PIPWin = null;
     }
 });
 

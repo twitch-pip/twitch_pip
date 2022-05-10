@@ -38,7 +38,7 @@ ipcRenderer.on("selectOtherStream", () => {
     if(flag) {
         clearInterval(getOnePickStream);
         getOnePickStream = setInterval(()=>{
-            ipcRenderer.send("isStreamOffWhileOn");
+            ipcRenderer.send("isStreamOff");
         }, 30000);
     }
 });
