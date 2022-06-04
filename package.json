@@ -1,6 +1,6 @@
 {
   "name": "isegye-idol_twitch_pip",
-  "version": "0.1.7",
+  "version": "0.1.8",
   "description": "",
   "main": "app.js",
   "scripts": {
@@ -62,11 +62,11 @@
       "target": [
         "default"
       ],
-      "icon": "/src/assets/icon2.jpg"
+      "icon": "./src/assets/icon2.icns"
     },
     "dmg": {
       "title": "ISEGYE-IDOL Twitch PIP",
-      "icon": "/src/assets/icon2.jpg"
+      "icon": "./src/assets/icon2.icns"
     },
     "nsis": {
       "oneClick": false,
