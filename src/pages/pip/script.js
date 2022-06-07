@@ -13,7 +13,6 @@ function window_close() {
     ipcRenderer.send("closePIP");
 }
 
-
 let video = document.createElement("video");
 video.width = 480;
 video.height = 270;

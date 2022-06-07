@@ -1,43 +1,42 @@
 const { ipcRenderer } = require("electron");
 
-let getOnePickStream;
-let flag = false;
+let getStream;
+let on = false;
 let login = false;
 
-function setGetOnePick(){
-    getOnePickStream = setInterval(()=>{
-        if(login) ipcRenderer.send("getOnePickStream");
-    }, 30000);
-}
-setGetOnePick();
+getStream = setInterval(()=>{
+    if(login) ipcRenderer.send("getOnePickStream");
+}, 30000);
 
 ipcRenderer.on("login", ()=>{
     login = true;
 });
 
 ipcRenderer.on("getOnePickStream_reply", () => {
-    flag = true;
-    clearInterval(getOnePickStream);
-    getOnePickStream = setInterval(()=>{
+    on = true;
+    clearInterval(getStream);
+    getStream = setInterval(()=>{
         ipcRenderer.send("isStreamOffWhileOn");
     }, 30000);
 });
 
 ipcRenderer.on("PIPClose", () => {
-    clearInterval(getOnePickStream);
-    getOnePickStream = setInterval(()=>{
+    clearInterval(getStream);
+    getStream = setInterval(()=>{
         ipcRenderer.send("isStreamOff");
     },30000);
 });
 ipcRenderer.on("isStreamOff_reply", () => {
-    flag = false;
-    clearInterval(getOnePickStream);
-    setGetOnePick();
+    on = false;
+    clearInterval(getStream);
+    getStream = setInterval(()=>{
+        if(login) ipcRenderer.send("getOnePickStream");
+    }, 30000);
 });
 ipcRenderer.on("selectOtherStream", () => {
-    if(flag) {
-        clearInterval(getOnePickStream);
-        getOnePickStream = setInterval(()=>{
+    if(on) {
+        clearInterval(getStream);
+        getStream = setInterval(()=>{
             ipcRenderer.send("isStreamOff");
         }, 30000);
     }

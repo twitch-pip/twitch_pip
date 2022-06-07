@@ -2,7 +2,7 @@ const electron = require("electron");
 const path = require("path");
 const { ElectronAuthProvider } = require("@twurple/auth-electron");
 const { ApiClient } = require("@twurple/api");
-const { app, BrowserWindow, ipcMain, Tray, Menu, session } = electron;
+const { app, BrowserWindow, ipcMain, Tray, Menu } = electron;
 const store = require("./store");
 const { autoUpdater } = require("electron-updater");
 const twitch = require("twitch-m3u8");
@@ -16,7 +16,7 @@ const authProvider = new ElectronAuthProvider({
 });
 const apiClient = new ApiClient({ authProvider });
 
-const channel_name = ["viichan6", "gosegugosegu", "cotton__123", "lilpaaaaaa", "vo_ine", "jingburger"];
+const channel_name = ["9ambler", "viichan6", "gosegugosegu", "cotton__123", "lilpaaaaaa", "vo_ine", "jingburger"];
 let mainWin;
 let tray;
 let backWin;
@@ -57,7 +57,6 @@ function createBackground() {
         },
     });
 
-    backWin.webContents.openDevTools();
     backWin.loadFile(path.join(page_dir, "pages/background/index.html"));
 }
 
@@ -95,7 +94,7 @@ app.on("ready", () => {
         if (!mainWin) createMainWindow();
     });
 
-    //store.store.delete("order");
+    store.store.delete("order");
     if (!store.store.get("order")) store.store.set("order", channel_name);
 });
 
@@ -115,7 +114,12 @@ ipcMain.on("getIsedolInfo", async (evt) => {
         const follows = await apiClient.users.getFollows({ followedUser: i.id, limit: 1 });
         const isStream = await apiClient.streams.getStreamByUserId(i.id);
         // let data = await apiClient.channels.getChannelInfo(i);
-        info.push({ "name": i.name, "displayName": i.displayName, "profile": i.profilePictureUrl, "id": i.id, "follows": follows.total, "isStream": isStream ? true : false });
+        info.push({ "name": i.name,
+            "displayName": i.displayName,
+            "profile": i.profilePictureUrl,
+            "id": i.id,
+            "follows": follows.total,
+            "isStream": isStream ? true : false });
     }
     backWin.webContents.send("login");
     evt.returnValue = info;
