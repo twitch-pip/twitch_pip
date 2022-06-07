@@ -21,7 +21,7 @@ let mainWin;
 let tray;
 let backWin;
 let PIPWin;
-
+let trayIcon;
 
 function createMainWindow() {
     mainWin = new BrowserWindow({
@@ -83,7 +83,8 @@ function createPIPWin(url) {
 app.on("ready", () => {
     createMainWindow();
     createBackground();
-    tray = new Tray(path.join(page_dir, "assets/icon.jpg"));
+    trayIcon = (process.platform === "darwin")?"assets/icon2.png":"assets/icon.jpg";
+    tray = new Tray(path.join(page_dir, trayIcon));
     const contextMenu = Menu.buildFromTemplate([
         { label: "Exit", type: "normal", role: "quit" },
     ]);

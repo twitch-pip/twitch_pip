@@ -62,11 +62,11 @@
       "target": [
         "default"
       ],
-      "icon": "/src/assets/icon2.jpg"
+      "icon": "./src/assets/icon2.icns"
     },
     "dmg": {
       "title": "ISEGYE-IDOL Twitch PIP",
-      "icon": "/src/assets/icon2.jpg"
+      "icon": "./src/assets/icon2.icns"
     },
     "nsis": {
       "oneClick": false,
