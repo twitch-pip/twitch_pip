@@ -7,7 +7,6 @@ body{
     overflow: hidden;
     padding: 20px;
     padding-top:0px;
-    padding-right:10px;
     -webkit-user-drag: none;
     user-select: none;
     -moz-user-select: none;
@@ -18,17 +17,13 @@ body{
 header{
     height:45px;
     display:flex;
-    justify-content: right;
+    margin-bottom: 15px;
 }
 
 label{
     color:white;
     font-family: 'Noto Sans KR', sans-serif;
     font-weight: 300;
-}
-
-#wakgood{
-    display:block;
 }
 
 #refresh{
@@ -39,6 +34,8 @@ label{
     cursor:pointer;
     margin-top:10px;
     display:block;
+    position:absolute;
+    right:10px;
 }
 #refresh:hover{
     background: none;
@@ -130,4 +127,50 @@ label{
 }
 a:link{
     color: #038cfc;
+}
+
+.channelPoints{
+    color:#efeff1;
+    font-size: 14px;
+    font-family: 'Noto Sans KR', sans-serif;
+    font-weight: 400;
+    display: flex;
+    align-items: center;
+}
+.channelPoints span{
+    margin-right: 4px;
+}
+.channelPoints input{
+    display:none;
+}
+.channelPoints input + label{
+    display:block;
+    margin-top:1px;
+    width:14px;
+    height:14px;
+    background-color: #0e0e10;
+    border-radius: 100%;
+    box-sizing: border-box;
+    border: 1px solid #595966;
+}
+.channelPoints input:checked + label{
+    background-color: #0e0e10;
+}
+.channelPoints input:checked + label::after{
+    content:"";
+    width:6px;
+    height:6px;
+    margin-top:3px;
+    margin-left:3px;
+    background-color: #2ed914;
+    border-radius: 100%;
+    position: absolute;
+}
+
+.alert{
+    color:white;
+    color:#efeff1;
+    font-size: 12px;
+    font-family: 'Noto Sans KR', sans-serif;
+    font-weight: 300;
 }

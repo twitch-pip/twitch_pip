@@ -41,6 +41,11 @@ docId("refresh").addEventListener("click", () => {
     location.reload();
 });
 
+docId("channelPoints").addEventListener("click", ()=>{
+    ipcRenderer.send("getChannelPoints");
+});
+docId("channelPoints").checked = store.store.get("channelPoints");
+
 store.store.get("order").forEach(e => {
     let div = document.createElement("div");
     div.id = e;
@@ -61,6 +66,13 @@ ipcRenderer.on("app_version_reply", (evt, arg) => {
 ipcRenderer.on("update_downloaded", () => {
     ipcRenderer.removeAllListeners("update_downloaded");
     docId("version_update").innerHTML = "<a href='javascript:restartApp()'>Update is available</a>";
+});
+
+ipcRenderer.on("cancelChangeGetChannelPoints", (evt, arg) => {
+    if(arg){
+        docId("channelPoints").checked = store.store.get("channelPoints");
+        alert("PIP 창이 켜져있을 때는 채널 포인트 획득 여부를 변경할 수 없습니다.");
+    }
 });
 
 let info = ipcRenderer.sendSync("getIsedolInfo");

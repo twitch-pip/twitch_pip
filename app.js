@@ -16,12 +16,13 @@ const authProvider = new ElectronAuthProvider({
 });
 const apiClient = new ApiClient({ authProvider });
 
-const channel_name = ["9ambler", "viichan6", "gosegugosegu", "cotton__123", "lilpaaaaaa", "vo_ine", "jingburger"];
+const channel_name = ["viichan6", "gosegugosegu", "cotton__123", "lilpaaaaaa", "vo_ine", "jingburger"];
 let mainWin;
 let tray;
 let backWin;
 let PIPWin;
 let trayIcon;
+let pointsWin;
 
 function createMainWindow() {
     mainWin = new BrowserWindow({
@@ -60,7 +61,7 @@ function createBackground() {
     backWin.loadFile(path.join(page_dir, "pages/background/index.html"));
 }
 
-function createPIPWin(url) {
+function createPIPWin(url, name) {
     PIPWin = new BrowserWindow({
         width: 480,
         height: 270,
@@ -75,9 +76,19 @@ function createPIPWin(url) {
         y: 710,
     });
     PIPWin.setMenu(null);
-    PIPWin.loadURL("file://" + path.join(page_dir, `pages/pip/index.html?url=${url}`));
+    PIPWin.loadURL("file://" + path.join(page_dir, `pages/pip/index.html?url=${url}&name=${name}`));
     PIPWin.setAlwaysOnTop(true, "screen-saver");
     PIPWin.setVisibleOnAllWorkspaces(true);
+
+    createPointsWin(name);
+}
+
+function createPointsWin(name){
+    pointsWin = new BrowserWindow({
+        show: false,
+    });
+    pointsWin.loadURL("https://twitch.tv/" + name);
+    pointsWin.webContents.setAudioMuted(true);
 }
 
 app.on("ready", () => {
@@ -95,8 +106,10 @@ app.on("ready", () => {
         if (!mainWin) createMainWindow();
     });
 
-    store.store.delete("order");
+    //store.store.delete("order");
     if (!store.store.get("order")) store.store.set("order", channel_name);
+    if (store.store.get("channelPoints") === null) store.store.set("channelPoint", true);
+    PIPWin = "a";
 });
 
 app.on("window-all-closed", () => {
@@ -131,7 +144,9 @@ ipcMain.on("getOnePickStream", async (evt) => {
     if (isStream) {
         if (PIPWin) {
             PIPWin.close();
+            pointsWin.close();
             PIPWin = null;
+            pointsWin = null;
         }
         await twitch.getStream(store.store.get("order")[ 0 ]).then((res) => {
             createPIPWin(res[ 1 ].url);
@@ -145,10 +160,12 @@ ipcMain.on("openSelectPIP", async (evt, arg) => {
     if(isStream){
         if (PIPWin) {
             PIPWin.close();
+            pointsWin.close();
             PIPWin = null;
+            pointsWin = null;
         }
         await twitch.getStream(arg).then((res) => {
-            createPIPWin(res[ 1 ].url);
+            createPIPWin(res[ 1 ].url, arg);
         });
         backWin.webContents.send("selectOtherStream");
     }
@@ -157,7 +174,9 @@ ipcMain.on("openSelectPIP", async (evt, arg) => {
 ipcMain.on("closePIP", (evt) => {
     backWin.webContents.send("PIPClose");
     PIPWin.close();
+    pointsWin.close();
     PIPWin = null;
+    pointsWin = null;
 });
 
 ipcMain.on("isStreamOff", async (evt) => {
@@ -165,12 +184,14 @@ ipcMain.on("isStreamOff", async (evt) => {
     if (!isStream) evt.sender.send("isStreamOff_reply");
 });
 
-ipcMain.on("isStreamOffWhileOn", async (evt) => {
-    const isStream = await apiClient.streams.getStreamByUserName(store.store.get("order")[ 0 ]) ? true : false;
+ipcMain.on("isStreamOffWhileOn", async (evt, arg) => {
+    const isStream = await apiClient.streams.getStreamByUserName(arg) ? true : false;
     if (!isStream) {
         evt.sender.send("isStreamOff_reply");
         PIPWin.close();
+        pointsWin.close();
         PIPWin = null;
+        pointsWin = null;
     }
 });
 
@@ -184,4 +205,9 @@ autoUpdater.on("update-downloaded", () => {
 
 ipcMain.on("restart_app", () => {
     autoUpdater.quitAndInstall();
+});
+
+ipcMain.on("getChannelPoints", (evt) => {
+    if(PIPWin === null) store.store.set("channelPoints", !store.store.get("channelPoints"));
+    else evt.sender.send("cancelChangeGetChannelPoints", true);
 });
