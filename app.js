@@ -16,6 +16,8 @@ const authProvider = new ElectronAuthProvider({
 });
 const apiClient = new ApiClient({ authProvider });
 
+const lock = app.requestSingleInstanceLock();
+
 const channel_name = ["viichan6", "gosegugosegu", "cotton__123", "lilpaaaaaa", "vo_ine", "jingburger"];
 let mainWin;
 let tray;
@@ -89,6 +91,19 @@ function createPointsWin(name){
     });
     pointsWin.loadURL("https://twitch.tv/" + name);
     pointsWin.webContents.setAudioMuted(true);
+}
+
+if(!lock){
+    app.quit();
+} else{
+    app.on("second-instance",() => {
+        if(mainWin){
+            if(mainWin.isMinimized() || !mainWin.isVisible()) mainWin.show();
+            mainWin.focus();
+        }else if(!mainWin){
+            createMainWindow();
+        }
+    });
 }
 
 app.on("ready", () => {
