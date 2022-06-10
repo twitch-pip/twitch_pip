@@ -20,7 +20,7 @@ const channel_name = ["viichan6", "gosegugosegu", "cotton__123", "lilpaaaaaa", "
 let mainWin;
 let tray;
 let backWin;
-let PIPWin;
+let PIPWin = null;
 let trayIcon;
 let pointsWin;
 
