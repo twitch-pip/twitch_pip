@@ -109,7 +109,6 @@ app.on("ready", () => {
     //store.store.delete("order");
     if (!store.store.get("order")) store.store.set("order", channel_name);
     if (store.store.get("channelPoints") === null) store.store.set("channelPoint", true);
-    PIPWin = "a";
 });
 
 app.on("window-all-closed", () => {
