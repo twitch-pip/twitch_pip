@@ -15,6 +15,7 @@ ipcRenderer.on("login", ()=>{
 ipcRenderer.on("getOnePickStream_reply", () => {
     on = true;
     clearInterval(getStream);
+    ipcRenderer.send("debug", 1);
 });
 
 ipcRenderer.on("PIPClose", () => {
@@ -22,6 +23,7 @@ ipcRenderer.on("PIPClose", () => {
     getStream = setInterval(()=>{
         ipcRenderer.send("isStreamOff");
     },30000);
+    ipcRenderer.send("debug", 2);
 });
 ipcRenderer.on("isStreamOff_reply", () => {
     on = false;
@@ -29,6 +31,7 @@ ipcRenderer.on("isStreamOff_reply", () => {
     getStream = setInterval(()=>{
         if(login) ipcRenderer.send("getOnePickStream");
     }, 30000);
+    ipcRenderer.send("debug", 3);
 });
 ipcRenderer.on("selectOtherStream", () => {
     if(on) {
@@ -37,4 +40,5 @@ ipcRenderer.on("selectOtherStream", () => {
             ipcRenderer.send("isStreamOff");
         }, 30000);
     }
+    ipcRenderer.send("debug", 4);
 });

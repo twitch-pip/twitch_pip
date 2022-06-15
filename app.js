@@ -163,7 +163,7 @@ ipcMain.on("getOnePickStream", async (evt) => {
             pointsWin = null;
         }
         await twitch.getStream(store.store.get("order")[ 0 ]).then((res) => {
-            createPIPWin(res[ 1 ].url);
+            createPIPWin(res[ 1 ].url, store.store.get("order")[0]);
         });
         evt.sender.send("getOnePickStream_reply", isStream);
     }
@@ -224,4 +224,8 @@ ipcMain.on("restart_app", () => {
 ipcMain.on("getChannelPoints", (evt) => {
     if(PIPWin === null) store.store.set("channelPoints", !store.store.get("channelPoints"));
     else evt.sender.send("cancelChangeGetChannelPoints", true);
+});
+
+ipcMain.on("debug", (evt, res) => {
+    console.log(res);
 });

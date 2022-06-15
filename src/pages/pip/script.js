@@ -24,6 +24,7 @@ hls.on(Hls.Events.MANIFEST_PARSED, ()=>{
 });
 docId("panel").prepend(video);
 
+ipcRenderer.send("debug", params);
 getStream = setInterval(()=>{
     ipcRenderer.send("isStreamOffWhileOn", params.name);
 }, 30000);
