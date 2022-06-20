@@ -15,7 +15,6 @@ ipcRenderer.on("login", ()=>{
 ipcRenderer.on("getOnePickStream_reply", () => {
     on = true;
     clearInterval(getStream);
-    ipcRenderer.send("debug", 1);
 });
 
 ipcRenderer.on("PIPClose", () => {

@@ -18,7 +18,7 @@ const apiClient = new ApiClient({ authProvider });
 
 const lock = app.requestSingleInstanceLock();
 
-const channel_name = ["viichan6", "gosegugosegu", "cotton__123", "lilpaaaaaa", "vo_ine", "jingburger"];
+const channel_name = ["silphtv", "viichan6", "gosegugosegu", "cotton__123", "lilpaaaaaa", "vo_ine", "jingburger"];
 let mainWin;
 let tray;
 let backWin;
@@ -121,7 +121,7 @@ app.on("ready", () => {
         if (!mainWin) createMainWindow();
     });
 
-    //store.store.delete("order");
+    store.store.delete("order");
     if (!store.store.get("order")) store.store.set("order", channel_name);
     if (store.store.get("channelPoints") === null) store.store.set("channelPoint", true);
 });
@@ -199,9 +199,10 @@ ipcMain.on("isStreamOff", async (evt) => {
 });
 
 ipcMain.on("isStreamOffWhileOn", async (evt, arg) => {
+    console.log(arg);
     const isStream = await apiClient.streams.getStreamByUserName(arg) ? true : false;
     if (!isStream) {
-        evt.sender.send("isStreamOff_reply");
+        backWin.webContents.send("isStreamOff_reply");
         PIPWin.close();
         pointsWin.close();
         PIPWin = null;
@@ -224,8 +225,4 @@ ipcMain.on("restart_app", () => {
 ipcMain.on("getChannelPoints", (evt) => {
     if(PIPWin === null) store.store.set("channelPoints", !store.store.get("channelPoints"));
     else evt.sender.send("cancelChangeGetChannelPoints", true);
-});
-
-ipcMain.on("debug", (evt, res) => {
-    console.log(res);
 });
