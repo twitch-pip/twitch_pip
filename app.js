@@ -18,7 +18,7 @@ const apiClient = new ApiClient({ authProvider });
 
 const lock = app.requestSingleInstanceLock();
 
-const channel_name = ["silphtv", "viichan6", "gosegugosegu", "cotton__123", "lilpaaaaaa", "vo_ine", "jingburger"];
+const channel_name = ["viichan6", "gosegugosegu", "cotton__123", "lilpaaaaaa", "vo_ine", "jingburger"];
 let mainWin;
 let tray;
 let backWin;
