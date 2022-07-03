@@ -148,4 +148,4 @@ containers.forEach(container => {
     });
 });
 
-ipcRenderer.send("getOnePickStream");
+ipcRenderer.send("openPIPWithAppOpen");

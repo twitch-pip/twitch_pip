@@ -30,6 +30,7 @@ function createMainWindow() {
     mainWin = new BrowserWindow({
         width: 756,
         height: 585,
+        frame: false,
         webPreferences: {
             contextIsolation: false,
             nodeIntegration: true,
@@ -47,7 +48,7 @@ function createMainWindow() {
     });
     mainWin.webContents.on("new-window", function(e, url) {
         e.preventDefault();
-        require("electron").shell.openExternal(url);
+        electron.shell.openExternal(url);
     });
 }
 
@@ -106,7 +107,7 @@ if(!lock){
     });
 }
 
-app.on("ready", () => {
+app.on("ready", async () => {
     createMainWindow();
     createBackground();
     trayIcon = (process.platform === "darwin")?"assets/icon2.png":"assets/icon.jpg";
@@ -199,7 +200,6 @@ ipcMain.on("isStreamOff", async (evt) => {
 });
 
 ipcMain.on("isStreamOffWhileOn", async (evt, arg) => {
-    console.log(arg);
     const isStream = await apiClient.streams.getStreamByUserName(arg) ? true : false;
     if (!isStream) {
         backWin.webContents.send("isStreamOff_reply");
@@ -225,4 +225,13 @@ ipcMain.on("restart_app", () => {
 ipcMain.on("getChannelPoints", (evt) => {
     if(PIPWin === null) store.store.set("channelPoints", !store.store.get("channelPoints"));
     else evt.sender.send("cancelChangeGetChannelPoints", true);
+});
+
+ipcMain.once("openPIPWithAppOpen", async () => {
+    if (await apiClient.streams.getStreamByUserName(store.store.get("order")[ 0 ]) ? true : false) {
+        await twitch.getStream(store.store.get("order")[ 0 ]).then((res) => {
+            createPIPWin(res[ 1 ].url, store.store.get("order")[0]);
+        });
+        backWin.webContents.send("getOnePickStream_reply", true);
+    }
 });
