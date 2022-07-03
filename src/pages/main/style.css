@@ -6,8 +6,6 @@
 body{
     background-color: #0e0e10;
     overflow: hidden;
-    padding: 20px;
-    padding-top:0px;
     -webkit-user-drag: none;
     user-select: none;
     -moz-user-select: none;
@@ -17,8 +15,45 @@ body{
 
 nav{
     height:20px;
-    background-color: #595966;
-    position: fixed;
+    background-color: #2a2a2a;
+    padding-left:12px;
+    color:white;
+    font-family: 'Noto Sans KR', sans-serif;
+    font-weight: 300;
+    font-size: 13px;
+    display: flex;
+    justify-content: space-between;
+}
+
+.movement{
+    -webkit-app-region: drag;
+    flex:1;
+}
+
+.main_button_panel{
+    display: flex;
+}
+.main_button_panel button{
+    width: 30px;
+    border: none;
+    background: none;
+}
+.main_button_panel .minimize:hover{
+    background: #3f3f3f;
+}
+.main_button_panel .close:hover{
+    background: #eb2835;
+}
+.main_button_panel button img{
+    width:20px;
+}
+.main_button_panel .minimize img{
+    margin-top:4px;
+}
+
+.padding{
+    padding: 20px;
+    padding-top:5px;
 }
 
 header{
