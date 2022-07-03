@@ -147,3 +147,5 @@ containers.forEach(container => {
         }
     });
 });
+
+ipcRenderer.send("getOnePickStream");
