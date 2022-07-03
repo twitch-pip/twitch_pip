@@ -31,6 +31,13 @@ function beautyFollows(follows) {
 
 function openSelect(id) {
     ipcRenderer.send("openSelectPIP", id);
+    setTimeout(()=>{
+        docId(id).addEventListener("click", function(){
+            openSelect(id);
+            docId(id).removeEventListener("click", arguments.callee);
+        });
+    }, 3000);
+    
 }
 
 function restartApp() {
@@ -51,8 +58,9 @@ store.store.get("order").forEach(e => {
     div.id = e;
     div.className = "panel_item";
     div.draggable = true;
-    div.addEventListener("click", () => {
+    div.addEventListener("click", function(){
         openSelect(e);
+        docId(e).removeEventListener("click", arguments.callee);
     });
     docId("panel").append(div);
 });

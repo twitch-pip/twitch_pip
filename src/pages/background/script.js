@@ -4,6 +4,8 @@ let getStream;
 let on = false;
 let login = false;
 
+if(login) ipcRenderer.send("getOnePickStream");
+
 getStream = setInterval(()=>{
     if(login) ipcRenderer.send("getOnePickStream");
 }, 30000);
