@@ -235,3 +235,12 @@ ipcMain.once("openPIPWithAppOpen", async () => {
         backWin.webContents.send("getOnePickStream_reply", true);
     }
 });
+
+ipcMain.on("closeMainWin", () => {
+    mainWin.close();
+    mainWin = null;
+});
+
+ipcMain.on("minimizeMainWin", () => {
+    mainWin.minimize();
+});

@@ -19,8 +19,8 @@
             <p>이세계 아이돌 트위치 PIP</p>
         </div>
         <div class="main_button_panel">
-            <button class="minimize"><img src="../../assets/minimize.svg"></button>
-            <button class="close"><img src="../../assets/close.svg"></button>
+            <button class="minimize" onclick="ipcRenderer.send('minimizeMainWin')"><img src="../../assets/minimize.svg"></button>
+            <button class="close" onclick="ipcRenderer.send('closeMainWin')"><img src="../../assets/close.svg"></button>
         </div>
     </nav>
     <div class="padding">
