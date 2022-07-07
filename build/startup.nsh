@@ -1,3 +1,3 @@
 !macro customInstall
-      CreateShortCut "$SMSTARTUP\ISEGYE-IDOL Twitch PIP.lnk" "$INSTDIR\ISEGYE-IDOL Twitch PIP.exe"
+      CreateShortCut "$SMSTARTUP\Isekaidol Twitch PIP.lnk" "$INSTDIR\Isekaidol Twitch PIP.exe"
 !macroend
