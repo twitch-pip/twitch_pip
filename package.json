@@ -1,6 +1,6 @@
 {
-  "name": "isegye-idol_twitch_pip",
-  "version": "0.1.15",
+  "name": "isekaidol_twitch_pip",
+  "version": "0.2.0",
   "description": "",
   "main": "app.js",
   "scripts": {
@@ -11,14 +11,14 @@
   },
   "repository": {
     "type": "git",
-    "url": "https://github.com/kewool/ISEGYE-IDOL_twitch_pip.git"
+    "url": "https://github.com/kewool/Isekaidol_twitch_pip.git"
   },
   "author": "kewool",
   "license": "ISC",
   "bugs": {
-    "url": "https://github.com/kewool/ISEGYE-IDOL_twitch_pip/issues"
+    "url": "https://github.com/kewool/Isekaidol_twitch_pip/issues"
   },
-  "homepage": "https://github.com/kewool/ISEGYE-IDOL_twitch_pip#readme",
+  "homepage": "https://github.com/kewool/Isekaidol_twitch_pip#readme",
   "dependencies": {
     "@twurple/api": "^5.0.19",
     "@twurple/auth": "^5.0.19",
@@ -40,16 +40,16 @@
       {
         "provider": "github",
         "owner": "kewool",
-        "repo": "ISEGYE-IDOL_twitch_pip"
+        "repo": "Isekaidol_twitch_pip"
       }
     ],
-    "productName": "ISEGYE-IDOL Twitch PIP",
+    "productName": "Isekaidol Twitch PIP",
     "appId": "com.electron.ISEDOLPIP",
     "asar": true,
     "protocols": {
-      "name": "ISEGYE-IDOL Twitch PIP",
+      "name": "Isekaidol Twitch PIP",
       "schemes": [
-        "ISEGYE-IDOL Twitch PIP"
+        "Isekaidol Twitch PIP"
       ]
     },
     "win": {
@@ -65,7 +65,7 @@
       "icon": "./src/assets/icon2.icns"
     },
     "dmg": {
-      "title": "ISEGYE-IDOL Twitch PIP",
+      "title": "Isekaidol Twitch PIP",
       "icon": "./src/assets/icon2.icns"
     },
     "nsis": {
