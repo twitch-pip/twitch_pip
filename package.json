@@ -1,6 +1,6 @@
 {
   "name": "isekaidol_twitch_pip",
-  "version": "0.2.0",
+  "version": "0.2.1",
   "description": "",
   "main": "app.js",
   "scripts": {
@@ -44,7 +44,7 @@
       }
     ],
     "productName": "Isekaidol Twitch PIP",
-    "appId": "com.electron.ISEDOLPIP",
+    "appId": "com.electron.IsekaidolPIP",
     "asar": true,
     "protocols": {
       "name": "Isekaidol Twitch PIP",
