@@ -10,7 +10,7 @@ const params = new Proxy(new URLSearchParams(window.location.search), {
 });
 
 function window_close() {
-    ipcRenderer.send("closePIP");
+    ipcRenderer.send("closePIP", params.name);
 }
 
 let video = document.createElement("video");

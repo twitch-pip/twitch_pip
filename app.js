@@ -18,13 +18,13 @@ const apiClient = new ApiClient({ authProvider });
 
 const lock = app.requestSingleInstanceLock();
 
-const channel_name = ["viichan6", "gosegugosegu", "cotton__123", "lilpaaaaaa", "vo_ine", "jingburger"];
+const channel_name = ["viichan6", "gosegugosegu", "cotton__123", "lilpaaaaaa", "jingburger", "vo_ine"];
 let mainWin;
 let tray;
 let backWin;
-let PIPWin = null;
+let PIPWin = {};
 let trayIcon;
-let pointsWin;
+let pointsWin = {};
 
 function createMainWindow() {
     mainWin = new BrowserWindow({
@@ -65,7 +65,7 @@ function createBackground() {
 }
 
 function createPIPWin(url, name) {
-    PIPWin = new BrowserWindow({
+    PIPWin.name = new BrowserWindow({
         width: 480,
         height: 270,
         webPreferences: {
@@ -87,7 +87,7 @@ function createPIPWin(url, name) {
 }
 
 function createPointsWin(name){
-    pointsWin = new BrowserWindow({
+    pointsWin.name = new BrowserWindow({
         show: false,
     });
     pointsWin.loadURL("https://twitch.tv/" + name);
@@ -123,7 +123,12 @@ app.on("ready", async () => {
     });
 
     //store.store.delete("order");
-    if (!store.store.get("order")) store.store.set("order", channel_name);
+    if (!store.store.get("order")){
+        store.store.set("order", channel_name);
+        app.setLoginItemSettings({
+            openAtLogin: true
+        });
+    }
     if (store.store.get("channelPoints") === null) store.store.set("channelPoint", true);
 });
 
@@ -157,12 +162,6 @@ ipcMain.on("getIsedolInfo", async (evt) => {
 ipcMain.on("getOnePickStream", async (evt) => {
     const isStream = await apiClient.streams.getStreamByUserName(store.store.get("order")[ 0 ]) ? true : false;
     if (isStream) {
-        if (PIPWin) {
-            PIPWin.close();
-            pointsWin.close();
-            PIPWin = null;
-            pointsWin = null;
-        }
         await twitch.getStream(store.store.get("order")[ 0 ]).then((res) => {
             createPIPWin(res[ 1 ].url, store.store.get("order")[0]);
         });
@@ -173,25 +172,19 @@ ipcMain.on("getOnePickStream", async (evt) => {
 ipcMain.on("openSelectPIP", async (evt, arg) => {
     const isStream = await apiClient.streams.getStreamByUserName(arg) ? true : false;
     if(isStream){
-        if (PIPWin) {
-            PIPWin.close();
-            pointsWin.close();
-            PIPWin = null;
-            pointsWin = null;
-        }
         await twitch.getStream(arg).then((res) => {
             createPIPWin(res[ 1 ].url, arg);
         });
-        backWin.webContents.send("selectOtherStream");
     }
 });
 
-ipcMain.on("closePIP", (evt) => {
-    backWin.webContents.send("PIPClose");
-    PIPWin.close();
-    pointsWin.close();
-    PIPWin = null;
-    pointsWin = null;
+ipcMain.on("closePIP", (evt, arg) => {
+    if(arg === store.store.get("order"))
+        backWin.webContents.send("PIPClose");
+    PIPWin.arg.close();
+    pointsWin.arg.close();
+    PIPWin.arg = null;
+    pointsWin.arg = null;
 });
 
 ipcMain.on("isStreamOff", async (evt) => {
@@ -203,10 +196,10 @@ ipcMain.on("isStreamOffWhileOn", async (evt, arg) => {
     const isStream = await apiClient.streams.getStreamByUserName(arg) ? true : false;
     if (!isStream) {
         backWin.webContents.send("isStreamOff_reply");
-        PIPWin.close();
-        pointsWin.close();
-        PIPWin = null;
-        pointsWin = null;
+        PIPWin.arg.close();
+        pointsWin.arg.close();
+        PIPWin.arg = null;
+        pointsWin.arg = null;
     }
 });
 
@@ -223,8 +216,7 @@ ipcMain.on("restart_app", () => {
 });
 
 ipcMain.on("getChannelPoints", (evt) => {
-    if(PIPWin === null) store.store.set("channelPoints", !store.store.get("channelPoints"));
-    else evt.sender.send("cancelChangeGetChannelPoints", true);
+    store.store.set("channelPoints", !store.store.get("channelPoints"));
 });
 
 ipcMain.once("openPIPWithAppOpen", async () => {
