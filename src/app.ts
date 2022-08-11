@@ -168,7 +168,7 @@ export const initializeStore = function() {
 
 export const bootstrap = function() {
     global.authProvider = new ElectronAuthProvider({
-        clientId: "m65puodpp4i8bvfrb27k1mrxr84e3z",
+        clientId: "f79abi79zcv9e3mhf459mih16p0h5c",
         redirectUri: "http://localhost/",
     });
     global.apiClient = new ApiClient({ authProvider: global.authProvider });
