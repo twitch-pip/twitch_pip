@@ -47,7 +47,7 @@ const createMainWindow = function() {
         webPreferences: {
             nodeIntegration: true,
             contextIsolation: false,
-            preload: path.join(__dirname, 'src', 'preload.js')
+            preload: path.join(__dirname, 'preload.js')
         },
         backgroundColor: "#0e0e10",
         icon: path.join(__public__, "images", "icon.jpg"),
