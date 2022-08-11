@@ -58,7 +58,7 @@ const createMainWindow = function () {
         webPreferences: {
             nodeIntegration: true,
             contextIsolation: false,
-            preload: path_1.default.join(__dirname, 'src', 'preload.js')
+            preload: path_1.default.join(__dirname, 'preload.js')
         },
         backgroundColor: "#0e0e10",
         icon: path_1.default.join(__public__, "images", "icon.jpg"),
@@ -163,8 +163,8 @@ const createTray = function () {
 exports.createTray = createTray;
 const initializeStore = function () {
     __store__.has("order") || __store__.set("order", default_1.channels);
-    __store__.has("channelPoints") || __store__.set("channelPoints", true);
-    __store__.has("auto-run-pip") || __store__.set("auto-run-pip", true);
+    __store__.has("channelPoints") || __store__.set("channelPoints", false);
+    __store__.has("auto-run-pip") || __store__.set("auto-run-pip", false);
     // __store__.has("streamers") || __store__.set("streamers", channels);
 };
 exports.initializeStore = initializeStore;
@@ -214,6 +214,9 @@ electron_1.ipcMain.on("openSelectPIP", (event, arg) => __awaiter(void 0, void 0,
 }));
 electron_1.ipcMain.on("toggleMouse", (event, arg) => {
     mouseIgnored = !mouseIgnored;
-    Object.values(pips).forEach((win) => win.setIgnoreMouseEvents(mouseIgnored));
+    Object.values(pips).forEach((win) => {
+        if (!win.isDestroyed())
+            win.setIgnoreMouseEvents(mouseIgnored);
+    });
 });
 setInterval(openNewStreamPIP, 30 * 1000);

@@ -12,7 +12,7 @@ ipcRenderer.__proto__.sendAsync = function (channel, ...args) {
             resolve(data);
         });
     });
-}
+};
 
 
 // Event Listeners
@@ -27,7 +27,7 @@ this.mouse.addEventListener("click", () => {
 });
 
 this.channelPoints.addEventListener("click", () => {
-    ipcRenderer.send("getChannelPoints");
+    //storage.set("channelPoints", this.channelPoints.checked);
 });
 
 // Functions

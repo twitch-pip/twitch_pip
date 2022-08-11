@@ -161,8 +161,8 @@ export const createTray = function() {
 
 export const initializeStore = function() {
     __store__.has("order") || __store__.set("order", channels);
-    __store__.has("channelPoints") || __store__.set("channelPoints", true);
-    __store__.has("auto-run-pip") || __store__.set("auto-run-pip", true);
+    __store__.has("channelPoints") || __store__.set("channelPoints", false);
+    __store__.has("auto-run-pip") || __store__.set("auto-run-pip", false);
     // __store__.has("streamers") || __store__.set("streamers", channels);
 }
 
@@ -218,7 +218,10 @@ ipcMain.on("openSelectPIP", async (event, arg) => {
 
 ipcMain.on("toggleMouse", (event, arg) => {
     mouseIgnored = !mouseIgnored;
-    Object.values(pips).forEach((win) => win.setIgnoreMouseEvents(mouseIgnored));
+    Object.values(pips).forEach((win) => {
+        if (!win.isDestroyed())
+            win.setIgnoreMouseEvents(mouseIgnored);
+    });
 });
 
 setInterval(openNewStreamPIP, 30 * 1000);
