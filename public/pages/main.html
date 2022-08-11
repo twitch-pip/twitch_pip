@@ -5,22 +5,22 @@
     <meta charset="UTF-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>이세계 아이돌 트위치 PIP</title>
-    <link rel="shortcut icon" href="../../assets/favicon.ico" type="image/x-icon">
-    <link rel="icon" href="../../assets/favicon.ico" type="image/x-icon">
-    <link rel="stylesheet" type="text/css" href="style.css">
-    <link rel="stylesheet" type="text/css" href="../global.css">
-    <script src="script.js" defer></script>
+    <title>트위치 PIP</title>
+    <link rel="shortcut icon" href="../images/favicon.ico" type="image/x-icon">
+    <link rel="icon" href="../images/favicon.ico" type="image/x-icon">
+    <link rel="stylesheet" type="text/css" href="../styles/main.css">
+    <link rel="stylesheet" type="text/css" href="../styles/global.css">
+    <script src="../javascripts/main.js" defer></script>
 </head>
 
 <body>
     <nav>
         <div class="movement">
-            <p>이세계 아이돌 트위치 PIP</p>
+            <p>트위치 PIP</p>
         </div>
         <div class="main_button_panel">
-            <button class="minimize" onclick="ipcRenderer.send('minimizeMainWin')"><img src="../../assets/minimize.svg"></button>
-            <button class="close" onclick="ipcRenderer.send('closeMainWin')"><img src="../../assets/close.svg"></button>
+            <button class="minimize" onclick="ipcRenderer.send('minimizeWindow')"><img src="../images/minimize.svg"></button>
+            <button class="close" onclick="ipcRenderer.send('closeWindow')"><img src="../images/close.svg"></button>
         </div>
     </nav>
     <div class="padding">
@@ -30,8 +30,11 @@
                 <p class="alert">개선됐으면 하는 부분이 있다면 kkttyy324@gmail.com으로 보내주세요!</p>
                 <p class="alert">사용하는 사람이 많을 수록 개발자한테 힘이 됩니다. 많은 홍보 부탁드립니다.</p>
             </div>
+            <button id="mouse">
+                <img src="../images/mouse.png">
+            </button>
             <button id="refresh">
-                <img src="../../assets/refresh.png">
+                <img src="../images/refresh.png">
             </button>
         </header>
         <div id="panel">

@@ -5,12 +5,12 @@
 
 body{
     background-color: #0e0e10;
-    overflow: hidden;
     -webkit-user-drag: none;
     user-select: none;
     -moz-user-select: none;
     -webkit-user-select: none;
     -ms-user-select: none;
+    margin-top: 20px;
 }
 
 nav{
@@ -23,6 +23,11 @@ nav{
     font-size: 13px;
     display: flex;
     justify-content: space-between;
+    position: fixed;
+    top: 0;
+    width: 100%;
+    box-sizing: border-box;
+    z-index: 100;
 }
 
 .movement{
@@ -53,13 +58,35 @@ nav{
 
 .padding{
     padding: 20px;
-    padding-top:5px;
+    padding-top: 0px;
+}
+
+body {
+    overflow: scroll;
+    overflow-x: hidden;
+
+    -ms-overflow-style: none;  /* Internet Explorer 10+ */
+    scrollbar-width: none;  /* Firefox */
+    overflow: -moz-scrollbars-none; /* Older Firefox */
+}
+body::-webkit-scrollbar { 
+    display: none;  /* Safari and Chrome */
+    width: 0;  /* Remove scrollbar space */
+    background: transparent;  /* Optional: just make scrollbar invisible */
+}
+body::-webkit-scrollbar-thumb {
+    background: #FF0000;
 }
 
 header{
-    height:45px;
-    display:flex;
-    margin-bottom: 15px;
+    height: 45px;
+    display: flex;
+    padding-top: 5px;
+    padding-bottom: 15px;
+    position: sticky;
+    top: 20px;
+    z-index: 99;
+    background-color: #0e0e10;
 }
 
 label{
@@ -83,6 +110,25 @@ label{
     background: none;
 }
 #refresh img{
+    width:40px; 
+    -webkit-user-drag: none;
+}
+
+#mouse {
+    width:40px;
+    height: 40px;
+    background: none;
+    border:none;
+    cursor:pointer;
+    margin-top:10px;
+    display:block;
+    position:absolute;
+    right:60px;
+}
+#mouse:hover {
+    background: none;
+}
+#mouse img {
     width:40px; 
     -webkit-user-drag: none;
 }

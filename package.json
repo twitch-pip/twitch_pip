@@ -1,13 +1,18 @@
 {
-  "name": "isekaidol_twitch_pip",
+  "name": "twitch_pip",
   "version": "0.2.1",
   "description": "",
   "main": "app.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1",
-    "dev": "electron .",
-    "build": "electron-builder --windows nsis:x64 -p always",
-    "buildmac": "electron-builder build --mac"
+    "dev": "(tsc -b) && (electron app.js)",
+    "test": "(tsc -b) && (electron app.js) && (exit 1)",
+    "build:osx": "build --mac",
+    "build:linux": "npm run build:linux32 && npm run build:linux64",
+    "build:linux32": "build --linux --ia32",
+    "build:linux64": "build --linux --x64",
+    "build:win": "npm run build:win32 && npm run build:win64",
+    "build:win32": "build --win --ia32",
+    "build:win64": "build --win --x64"
   },
   "repository": {
     "type": "git",
@@ -39,39 +44,39 @@
     "publish": [
       {
         "provider": "github",
-        "owner": "kewool",
-        "repo": "Isekaidol_twitch_pip"
+        "owner": "rmagur1203",
+        "repo": "twitch_pip"
       }
     ],
-    "productName": "Isekaidol Twitch PIP",
-    "appId": "com.electron.IsekaidolPIP",
+    "productName": "Twitch PIP",
+    "appId": "com.rmagur1203.twitchpip",
     "asar": true,
     "protocols": {
-      "name": "Isekaidol Twitch PIP",
+      "name": "Twitch PIP",
       "schemes": [
-        "Isekaidol Twitch PIP"
+        "Twitch PIP"
       ]
     },
     "win": {
       "target": [
         "nsis"
       ],
-      "icon": "/src/assets/icon2.jpg"
+      "icon": "assets/icon.ico"
     },
     "mac": {
       "target": [
         "default"
       ],
-      "icon": "./src/assets/icon2.icns"
+      "icon": "assets/icon.icns"
     },
     "dmg": {
-      "title": "Isekaidol Twitch PIP",
-      "icon": "./src/assets/icon2.icns"
+      "title": "Twitch PIP",
+      "icon": "assets/icon.icns"
     },
     "nsis": {
       "oneClick": false,
       "allowToChangeInstallationDirectory": true,
-      "shortcutName": "이세계아이돌 트위치 PIP",
+      "shortcutName": "트위치 PIP",
       "deleteAppDataOnUninstall": true,
       "perMachine": true
     },
