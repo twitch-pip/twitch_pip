@@ -12,7 +12,7 @@ function initialize() {
     global.tray = null;
     global.mainWindow = null;
     global.pipWindows = {};
-    global.pointWindows = {};
+    global.chattingWindows = {};
     global.mouseIgnored = false;
     global.previousStreamState = {};
 }

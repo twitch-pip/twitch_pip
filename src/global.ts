@@ -10,7 +10,7 @@ declare global {
     var tray: Tray | null;
     var mainWindow: Electron.BrowserWindow | null;
     var pipWindows: { [key: string]: BrowserWindow };
-    var pointWindows: { [key: string]: BrowserWindow };
+    var chattingWindows: { [key: string]: BrowserWindow };
 
     var mouseIgnored: boolean;
     var previousStreamState: { [key: string]: boolean };
@@ -28,7 +28,7 @@ function initialize() {
     global.tray = null;
     global.mainWindow = null;
     global.pipWindows = {};
-    global.pointWindows = {};
+    global.chattingWindows = {};
     
     global.mouseIgnored = false;
     global.previousStreamState = {};

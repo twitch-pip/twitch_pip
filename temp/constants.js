@@ -16,9 +16,13 @@ exports.__store__ = new electron_store_1.default({
             type: "array",
             default: exports.defaultChannels,
         },
-        channelPoints: {
+        chatting: {
             type: "boolean",
-            default: false,
+            default: true,
+        },
+        darktheme: {
+            type: "boolean",
+            default: true,
         },
         "auto-run-pip": {
             type: "boolean",

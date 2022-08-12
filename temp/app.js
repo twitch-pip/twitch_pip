@@ -12,7 +12,7 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.bootstrap = exports.createTray = exports.createPointWindow = exports.createPIPWindow = void 0;
+exports.bootstrap = exports.createTray = exports.createChattingWindow = exports.createPIPWindow = void 0;
 const path_1 = __importDefault(require("path"));
 const electron_1 = require("electron");
 const twitch_m3u8_1 = __importDefault(require("twitch-m3u8"));
@@ -78,18 +78,6 @@ const createMainWindow = function () {
             label: "Debug",
             submenu: [
                 {
-                    label: "Show point windows",
-                    click: () => {
-                        Object.values(pointWindows).forEach((win) => win.show());
-                    }
-                },
-                {
-                    label: "Hide point windows",
-                    click: () => {
-                        Object.values(pointWindows).forEach((win) => win.hide());
-                    }
-                },
-                {
                     label: "Config Editor",
                     click: () => {
                         constants_1.__store__.openInEditor();
@@ -131,38 +119,49 @@ const createPIPWindow = function (url, channelName) {
     window.setAspectRatio(16 / 9);
     window.setResizable(true);
     window.setIgnoreMouseEvents(mouseIgnored);
+    window.on("closed", () => {
+        var _a, _b;
+        console.log((_a = chattingWindows[channelName]) === null || _a === void 0 ? void 0 : _a.closable);
+        if (!chattingWindows[channelName])
+            return;
+        if (chattingWindows[channelName].isDestroyed())
+            return;
+        ((_b = chattingWindows[channelName]) === null || _b === void 0 ? void 0 : _b.closable) && chattingWindows[channelName].close();
+    });
     pipWindows[channelName] = window;
-    if (constants_1.__store__.get("channelPoints", false))
-        (0, exports.createPointWindow)(channelName);
+    if (constants_1.__store__.get("chatting", false))
+        (0, exports.createChattingWindow)(channelName);
 };
 exports.createPIPWindow = createPIPWindow;
-const createPointWindow = function (channelName) {
-    if (!constants_1.__store__.get("channelPoints", false))
+const createChattingWindow = function (channelName) {
+    if (!constants_1.__store__.get("chatting", false))
         return;
-    if (pointWindows[channelName] && !pointWindows[channelName].isDestroyed())
+    if (chattingWindows[channelName] && !chattingWindows[channelName].isDestroyed())
         return;
+    let options = "";
+    if (constants_1.__store__.get("darktheme", false))
+        options += "&darkpopout";
     const window = new electron_1.BrowserWindow({
-        show: false,
+        width: 340,
+        height: 677,
+        title: `${channelName}'s Live Chatting`,
+        icon: path_1.default.join(constants_1.__public__, "images", "favicon-twitch.png"),
         autoHideMenuBar: true,
+        webPreferences: {
+            contextIsolation: true,
+            preload: path_1.default.join(electron_1.app.getAppPath(), 'preload.js')
+        },
     });
-    window.loadURL("https://twitch.tv/" + channelName);
+    window.loadURL(`https://www.twitch.tv/embed/${channelName}/chat?parent=localhost${options}`);
     window.webContents.setAudioMuted(true);
-    pointWindows[channelName] = window;
+    chattingWindows[channelName] = window;
 };
-exports.createPointWindow = createPointWindow;
+exports.createChattingWindow = createChattingWindow;
 const createTray = function () {
     tray = new electron_1.Tray(path_1.default.join(constants_1.__asset__, "icon.jpg"));
     tray.setToolTip("트위치 pip");
     tray.setContextMenu(electron_1.Menu.buildFromTemplate([
         { label: "종료", type: "normal", role: "quit" },
-        { label: "포인트 창", type: "submenu", submenu: [
-                { label: "열기", type: "normal", click: () => {
-                        Object.values(pointWindows).filter(x => !x.isDestroyed()).forEach((win) => win.show());
-                    } },
-                { label: "닫기", type: "normal", click: () => {
-                        Object.values(pointWindows).filter(x => !x.isDestroyed()).forEach((win) => win.hide());
-                    } },
-            ] },
         { label: "PIP 창", type: "submenu", submenu: [
                 { label: "투명도 조절", type: "submenu", submenu: [
                         { label: "10%", type: "normal", click: () => {

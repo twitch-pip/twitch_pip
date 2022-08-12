@@ -4,7 +4,8 @@ const containers = document.querySelectorAll("#panel");
 
 
 // Event Listeners
-this.channelPoints.checked = storage.get("channelPoints");
+this.chatting.checked = storage.get("chatting");
+this.darktheme.checked = storage.get("darktheme");
 
 this.refresh.addEventListener("click", () => {
     location.reload();
@@ -14,8 +15,12 @@ this.mouse.addEventListener("click", () => {
     pip.toggleMouse();
 });
 
-this.channelPoints.addEventListener("click", () => {
-    storage.set("channelPoints", this.channelPoints.checked);
+this.chatting.addEventListener("click", () => {
+    storage.set("chatting", this.chatting.checked);
+});
+
+this.darktheme.addEventListener("click", () => {
+    storage.set("darktheme", this.darktheme.checked);
 });
 
 // Functions
