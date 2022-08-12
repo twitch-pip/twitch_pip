@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>트위치 PIP</title>
+    <link rel="shortcut icon" href="../images/favicon.ico" type="image/x-icon">
+    <link rel="icon" href="../images/favicon.ico" type="image/x-icon">
+    <link rel="stylesheet" type="text/css" href="../styles/edit.css">
+    <link rel="stylesheet" type="text/css" href="../styles/global.css">
+    <script src="../javascripts/edit.js" defer></script>
+</head>
+<body>
+    <div class="edit_wrapper">
+        <div class="padding">
+            <p class="alert">PIP 로 시청하고 싶은 스트리머의 아이디를 아래 입력창에 입력해주세요.</p>
+            <div class="streamer">
+                <input type="text" id="streamer_id" class="streamer_id" placeholder="스트리머 아이디">
+                <button id="register">등록</button>
+            </div>
+            <div id="panel">
+            </div>
+        </div>
+
+        <div class="settings_box">
+            <div class="opacity_control">
+                <p>투명도</p>
+                <input type="range" min="0" max="100">
+            </div>
+
+            <div class="volume_control">
+                <p>음량</p>
+                <input type="range" min="0" max="100">
+            </div>
+        </div>
+
+        <button id="back">돌아가기</button>
+    </div>
+</body>
+</html>

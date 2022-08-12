@@ -27,16 +27,21 @@ class Twitch {
             const res = yield apiClient.users.getUsersByNames(streamers);
             let info = [];
             for (const i of res) {
-                const follows = yield apiClient.users.getFollows({ followedUser: i.id, limit: 1 });
-                const isStream = (yield apiClient.streams.getStreamByUserId(i.id)) ? true : false;
-                info.push({
+                let tmp = {
                     "name": i.name,
                     "displayName": i.displayName,
-                    "profile": i.profilePictureUrl,
-                    "id": i.id,
-                    "follows": follows.total,
-                    "isStream": isStream
-                });
+                };
+                if (args[0] != "edit") {
+                    const follows = yield apiClient.users.getFollows({ followedUser: i.id, limit: 1 });
+                    const isStream = (yield apiClient.streams.getStreamByUserId(i.id)) ? true : false;
+                    Object.assign(tmp, {
+                        "profile": i.profilePictureUrl,
+                        "id": i.id,
+                        "follows": follows.total,
+                        "isStream": isStream
+                    });
+                }
+                info.push(tmp);
             }
             return info;
         });

@@ -18,6 +18,10 @@ this.channelPoints.addEventListener("click", () => {
     storage.set("channelPoints", this.channelPoints.checked);
 });
 
+this.edit.addEventListener("click", () => {
+    window.location.href = "./edit.html";
+});
+
 // Functions
 function getDragAfterElement(container, y) {
     const draggableElements = [...container.querySelectorAll(".panel_item:not(.dragging)")];
