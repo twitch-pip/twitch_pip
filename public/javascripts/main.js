@@ -1,18 +1,6 @@
-const { ipcRenderer } = require("electron");
-const storage = require("../javascripts/store");
-
 // Constants
 const draggables = document.querySelectorAll(".panel_item");
 const containers = document.querySelectorAll("#panel");
-
-ipcRenderer.__proto__.sendAsync = function (channel, ...args) {
-    return new Promise((resolve, reject) => {
-        this.send(channel, ...args);
-        this.once(channel, (evt, data) => {
-            resolve(data);
-        });
-    });
-};
 
 
 // Event Listeners
@@ -23,18 +11,14 @@ this.refresh.addEventListener("click", () => {
 });
 
 this.mouse.addEventListener("click", () => {
-    ipcRenderer.send("toggleMouse");
+    pip.toggleMouse();
 });
 
 this.channelPoints.addEventListener("click", () => {
-    //storage.set("channelPoints", this.channelPoints.checked);
+    storage.set("channelPoints", this.channelPoints.checked);
 });
 
 // Functions
-function install() {
-    ipcRenderer.send("updateInstall");
-}
-
 function getDragAfterElement(container, y) {
     const draggableElements = [...container.querySelectorAll(".panel_item:not(.dragging)")];
 
@@ -50,18 +34,30 @@ function getDragAfterElement(container, y) {
 }
 
 function beautyFollows(follows) {
-    let first = `${(follows + "").substring(0, (follows + "").length - 4)}`;
-    let second = `${(follows + "").substring((follows + "").length - 4, (follows + "").length - 3)}`;
-    if (second * 1) return `팔로워 ${first}.${second}만명`;
-    else return `팔로워 ${first}만명`;
+    const units = ["", "만", "억"];
+    let unit = 0;
+    while(follows > 0) {
+        const upperUnit = Math.floor(follows / 10000);
+        console.log(follows, upperUnit, unit);
+        if (upperUnit === 0) {
+            return `팔로워 ${follows.toFixed(1) + units[unit]}명`;
+        }
+        follows = follows / 10000;
+        unit++;
+    }
 }
 
 function openSelect(id) {
-    console.log(id);
-    ipcRenderer.send("openSelectPIP", id);
+    pip.open(id);
 }
 
 // Runner
+
+(async () => {
+    let version = await app.getVersion();
+    this.version_num.innerText = version;
+})();
+
 storage.get("order").forEach(x => {
     let div = document.createElement("div");
     div.id = x;
@@ -104,9 +100,7 @@ containers.forEach(container => {
 });
 
 (async () => {
-    let info = await ipcRenderer.invoke("streamerStatus");
-
-    console.log(info);
+    let info = await twitch.streamerStates();
 
     info.forEach(element => {
         let div = document.createElement("div");
@@ -145,11 +139,6 @@ containers.forEach(container => {
     });
 })();
 
-ipcRenderer.send("appInfo");
-ipcRenderer.once("appInfo", (evt, arg) => {
-    this.version_num.innerText = "Version: " + arg.version;
-});
-
-ipcRenderer.once("updateDownloaded", () => {
-    this.version_update.innerHTML = "<a href='javascript:install()'>Update is available</a>";
+update.onDownloaded(() => {
+    this.version_update.innerHTML = "<a href='javascript:update.install()'>Update is available</a>";
 });

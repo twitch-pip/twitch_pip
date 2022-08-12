@@ -19,8 +19,8 @@
             <p>트위치 PIP</p>
         </div>
         <div class="main_button_panel">
-            <button class="minimize" onclick="ipcRenderer.send('minimizeWindow')"><img src="../images/minimize.svg"></button>
-            <button class="close" onclick="ipcRenderer.send('closeWindow')"><img src="../images/close.svg"></button>
+            <button class="minimize" onclick="electron.window.minimize()"><img src="../images/minimize.svg"></button>
+            <button class="close" onclick="electron.window.close()"><img src="../images/close.svg"></button>
         </div>
     </nav>
     <div class="padding">

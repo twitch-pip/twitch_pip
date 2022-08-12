@@ -1,29 +1,40 @@
 {
   "name": "twitch_pip",
-  "version": "0.2.1",
+  "version": "1.0.0",
   "description": "",
-  "main": "app.js",
+  "main": "temp/app.js",
   "scripts": {
-    "dev": "(tsc -b) && (electron app.js)",
-    "test": "(tsc -b) && (electron app.js) && (exit 1)",
-    "build:osx": "build --mac",
-    "build:linux": "npm run build:linux32 && npm run build:linux64",
-    "build:linux32": "build --linux --ia32",
-    "build:linux64": "build --linux --x64",
-    "build:win": "npm run build:win32 && npm run build:win64",
-    "build:win32": "build --win --ia32",
-    "build:win64": "build --win --x64"
+    "dev": "(rimraf temp) && (mkdir temp) && (tsc -b) && (electron .)",
+    "test": "(tsc -b) && (electron .) && (exit 1)",
+    "pack": "electron-builder --dir",
+    "dist": "electron-builder",
+    "build": "npm run build:linux && npm run build:win",
+    "build:osx": "electron-builder --mac --publish onTagOrDraft",
+    "build:linux": "electron-builder --linux --ia32 --x64 --publish onTagOrDraft",
+    "build:linux32": "electron-builder --linux --ia32 --publish onTagOrDraft",
+    "build:linux64": "electron-builder --linux --x64 --publish onTagOrDraft",
+    "build:win": "electron-builder --win --ia32 --x64 --publish onTagOrDraft",
+    "build:win32": "electron-builder --win --ia32 --publish onTagOrDraft",
+    "build:win64": "electron-builder build --win --x64 --publish onTagOrDraft",
+    "deploy": "npm run build:linux && npm run build:win",
+    "deploy:osx": "electron-builder --mac --publish always",
+    "deploy:linux": "electron-builder --linux --ia32 --x64 --publish always",
+    "deploy:linux32": "electron-builder --linux --ia32 --publish always",
+    "deploy:linux64": "electron-builder --linux --x64 --publish always",
+    "deploy:win": "electron-builder --win --ia32 --x64 --publish always",
+    "deploy:win32": "electron-builder --win --ia32 --publish always",
+    "deploy:win64": "electron-builder --win --x64 --publish always"
   },
   "repository": {
     "type": "git",
-    "url": "https://github.com/kewool/Isekaidol_twitch_pip.git"
+    "url": "https://github.com/twitch-pip/twitch_pip.git"
   },
   "author": "kewool",
   "license": "ISC",
   "bugs": {
-    "url": "https://github.com/kewool/Isekaidol_twitch_pip/issues"
+    "url": "https://github.com/twitch-pip/twitch_pip/issues"
   },
-  "homepage": "https://github.com/kewool/Isekaidol_twitch_pip#readme",
+  "homepage": "https://github.com/twitch-pip/twitch_pip#readme",
   "dependencies": {
     "@twurple/api": "^5.0.19",
     "@twurple/auth": "^5.0.19",
@@ -38,52 +49,7 @@
     "electron-builder": "^23.3.3",
     "electron-log": "^4.4.6",
     "eslint": "^8.14.0",
-    "eslint-config-google": "^0.14.0"
-  },
-  "build": {
-    "publish": [
-      {
-        "provider": "github",
-        "owner": "rmagur1203",
-        "repo": "twitch_pip"
-      }
-    ],
-    "productName": "Twitch PIP",
-    "appId": "com.rmagur1203.twitchpip",
-    "asar": true,
-    "protocols": {
-      "name": "Twitch PIP",
-      "schemes": [
-        "Twitch PIP"
-      ]
-    },
-    "win": {
-      "target": [
-        "nsis"
-      ],
-      "icon": "assets/icon.ico"
-    },
-    "mac": {
-      "target": [
-        "default"
-      ],
-      "icon": "assets/icon.icns"
-    },
-    "dmg": {
-      "title": "Twitch PIP",
-      "icon": "assets/icon.icns"
-    },
-    "nsis": {
-      "oneClick": false,
-      "allowToChangeInstallationDirectory": true,
-      "shortcutName": "트위치 PIP",
-      "deleteAppDataOnUninstall": true,
-      "perMachine": true
-    },
-    "directories": {
-      "buildResources": "./resources/installer/",
-      "output": "./dist/",
-      "app": "."
-    }
+    "eslint-config-google": "^0.14.0",
+    "rimraf": "^3.0.2"
   }
 }

@@ -1,37 +1,27 @@
 import path from "path";
 import { app, BrowserWindow, ipcMain, Tray, Menu, shell } from "electron";
-import ElectronStore from "electron-store";
-import { autoUpdater } from "electron-updater";
-import { ElectronAuthProvider } from "@twurple/auth-electron";
 import { ApiClient } from "@twurple/api";
 import twitch from "twitch-m3u8";
-import { channels } from "./default";
+
+import { __asset__, __public__, __store__ } from "./constants";
+
 import "./global";
+import "./ipc";
+import "./updater";
 
-const __public__ = path.join(__dirname, "public");
-const __asset__ = path.join(__dirname, "assets");
-const __store__ = new ElectronStore();
-
-let tray: Tray | null;
-let mainWindow: BrowserWindow | null;
-let pips: { [key: string]: BrowserWindow } = {};
-let points: { [key: string]: BrowserWindow } = {};
-let mouseIgnored = false;
-let prevStreamStatus: { [key: string]: boolean } = {};
-
-const openNewStreamPIP = async () => {
-    const autoRun = __store__.get("auto-run-pip", true);
+const openStreamingPIP = async () => {
+    const autoRun = __store__.get("auto-run-pip", true) as boolean;
     if (!autoRun) return;
-    const streamers = __store__.get("order", []);
+    const streamers = __store__.get("order", []) as string[];
     const res = await apiClient.users.getUsersByNames(streamers);
 
     for (const i of res) {
         const isStream = await (apiClient as ApiClient).streams.getStreamByUserId(i.id) ? true : false;
-        if (prevStreamStatus[i.id] !== isStream) {
-            prevStreamStatus[i.id] = isStream;
+        if (previousStreamState[i.id] !== isStream) {
+            previousStreamState[i.id] = isStream;
             if (isStream) {
                 const stream = await twitch.getStream(i.name);
-                if (!pips[i.name])
+                if (!pipWindows[i.name])
                     createPIPWindow(stream[1].url, i.name);
             }
         }
@@ -39,15 +29,16 @@ const openNewStreamPIP = async () => {
 }
 
 const createMainWindow = function() {
+    if (mainWindow && !mainWindow.isDestroyed()) return;
+
     mainWindow = new BrowserWindow({
         width: 786,
         height: 585,
         frame: false,
         autoHideMenuBar: true,
         webPreferences: {
-            nodeIntegration: true,
-            contextIsolation: false,
-            preload: path.join(__dirname, 'preload.js')
+            contextIsolation: true,
+            preload: path.join(app.getAppPath(), 'preload.js')
         },
         backgroundColor: "#0e0e10",
         icon: path.join(__public__, "images", "icon.jpg"),
@@ -62,13 +53,13 @@ const createMainWindow = function() {
                 {
                     label: "Ignore Mouse",
                     click: () => {
-                        Object.values(pips).forEach((win) => win.setIgnoreMouseEvents(true));
+                        Object.values(pipWindows).forEach((win) => win.setIgnoreMouseEvents(true));
                     }
                 },
                 {
                     label: "Attend Mouse",
                     click: () => {
-                        Object.values(pips).forEach((win) => win.setIgnoreMouseEvents(false));
+                        Object.values(pipWindows).forEach((win) => win.setIgnoreMouseEvents(false));
                     }
                 }
             ]
@@ -79,13 +70,13 @@ const createMainWindow = function() {
                 {
                     label: "Show point windows",
                     click: () => {
-                        Object.values(points).forEach((win) => win.show());
+                        Object.values(pointWindows).forEach((win) => win.show());
                     }
                 },
                 {
                     label: "Hide point windows",
                     click: () => {
-                        Object.values(points).forEach((win) => win.hide());
+                        Object.values(pointWindows).forEach((win) => win.hide());
                     }
                 },
                 {
@@ -113,13 +104,14 @@ const createMainWindow = function() {
 }
 
 export const createPIPWindow = function(url: string, channelName: string) {
-    if (pips[channelName] && !pips[channelName].isDestroyed()) return;
+    if (pipWindows[channelName] && !pipWindows[channelName].isDestroyed()) return;
+
     const window = new BrowserWindow({
         width: 480,
         height: 270,
         webPreferences: {
-            contextIsolation: false,
-            nodeIntegration: true,
+            contextIsolation: true,
+            preload: path.join(app.getAppPath(), 'preload.js')
         },
         frame: false,
         resizable: false,
@@ -134,14 +126,16 @@ export const createPIPWindow = function(url: string, channelName: string) {
     window.setResizable(true);
     window.setIgnoreMouseEvents(mouseIgnored);
 
-    pips[channelName] = window;
+    pipWindows[channelName] = window;
 
-    createPointWindow(channelName);
+    if (__store__.get("channelPoints", false))
+        createPointWindow(channelName);
 }
 
 export const createPointWindow = function(channelName: string) {
     if (!__store__.get("channelPoints", false)) return;
-    if (points[channelName] && !points[channelName].isDestroyed()) return;
+    if (pointWindows[channelName] && !pointWindows[channelName].isDestroyed()) return;
+
     const window = new BrowserWindow({
         show: false,
         autoHideMenuBar: true,
@@ -149,7 +143,7 @@ export const createPointWindow = function(channelName: string) {
     window.loadURL("https://twitch.tv/" + channelName);
     window.webContents.setAudioMuted(true);
 
-    points[channelName] = window;
+    pointWindows[channelName] = window;
 }
 
 export const createTray = function() {
@@ -160,75 +154,75 @@ export const createTray = function() {
         { label: "종료", type: "normal", role: "quit" },
         { label: "포인트 창", type: "submenu", submenu: [
             { label: "열기", type: "normal", click: () => {
-                Object.values(points).filter(x => !x.isDestroyed()).forEach((win) => win.show());
+                Object.values(pointWindows).filter(x => !x.isDestroyed()).forEach((win) => win.show());
             } },
             { label: "닫기", type: "normal", click: () => {
-                Object.values(points).filter(x => !x.isDestroyed()).forEach((win) => win.hide());
+                Object.values(pointWindows).filter(x => !x.isDestroyed()).forEach((win) => win.hide());
             } },
         ] },
         { label: "PIP 창", type: "submenu", submenu: [
             { label: "투명도 조절", type: "submenu", submenu: [
                 { label: "10%", type: "normal", click: () => {
-                    Object.values(pips).filter(x => !x.isDestroyed()).forEach((win) => win.setOpacity(.1));
+                    Object.values(pipWindows).filter(x => !x.isDestroyed()).forEach((win) => win.setOpacity(.1));
                 } },
                 { label: "20%", type: "normal", click: () => {
-                    Object.values(pips).filter(x => !x.isDestroyed()).forEach((win) => win.setOpacity(.2));
+                    Object.values(pipWindows).filter(x => !x.isDestroyed()).forEach((win) => win.setOpacity(.2));
                 } },
                 { label: "30%", type: "normal", click: () => {
-                    Object.values(pips).filter(x => !x.isDestroyed()).forEach((win) => win.setOpacity(.3));
+                    Object.values(pipWindows).filter(x => !x.isDestroyed()).forEach((win) => win.setOpacity(.3));
                 } },
                 { label: "40%", type: "normal", click: () => {
-                    Object.values(pips).filter(x => !x.isDestroyed()).forEach((win) => win.setOpacity(.4));
+                    Object.values(pipWindows).filter(x => !x.isDestroyed()).forEach((win) => win.setOpacity(.4));
                 } },
                 { label: "50%", type: "normal", click: () => {
-                    Object.values(pips).filter(x => !x.isDestroyed()).forEach((win) => win.setOpacity(.5));
+                    Object.values(pipWindows).filter(x => !x.isDestroyed()).forEach((win) => win.setOpacity(.5));
                 } },
                 { label: "60%", type: "normal", click: () => {
-                    Object.values(pips).filter(x => !x.isDestroyed()).forEach((win) => win.setOpacity(.6));
+                    Object.values(pipWindows).filter(x => !x.isDestroyed()).forEach((win) => win.setOpacity(.6));
                 } },
                 { label: "70%", type: "normal", click: () => {
-                    Object.values(pips).filter(x => !x.isDestroyed()).forEach((win) => win.setOpacity(.7));
+                    Object.values(pipWindows).filter(x => !x.isDestroyed()).forEach((win) => win.setOpacity(.7));
                 } },
                 { label: "80%", type: "normal", click: () => {
-                    Object.values(pips).filter(x => !x.isDestroyed()).forEach((win) => win.setOpacity(.8));
+                    Object.values(pipWindows).filter(x => !x.isDestroyed()).forEach((win) => win.setOpacity(.8));
                 } },
                 { label: "90%", type: "normal", click: () => {
-                    Object.values(pips).filter(x => !x.isDestroyed()).forEach((win) => win.setOpacity(.9));
+                    Object.values(pipWindows).filter(x => !x.isDestroyed()).forEach((win) => win.setOpacity(.9));
                 } },
                 { label: "100%", type: "normal", click: () => {
-                    Object.values(pips).filter(x => !x.isDestroyed()).forEach((win) => win.setOpacity(1));
+                    Object.values(pipWindows).filter(x => !x.isDestroyed()).forEach((win) => win.setOpacity(1));
                 } },
             ] },
             { label: "소리 조절", type: "submenu", submenu: [
                 { label: "10%", type: "normal", click: () => {
-                    Object.values(pips).filter(x => !x.isDestroyed()).forEach((win) => win.webContents.send("setVolume", .1));
+                    Object.values(pipWindows).filter(x => !x.isDestroyed()).forEach((win) => win.webContents.send("setVolume", .1));
                 } },
                 { label: "20%", type: "normal", click: () => {
-                    Object.values(pips).filter(x => !x.isDestroyed()).forEach((win) => win.webContents.send("setVolume", .2));
+                    Object.values(pipWindows).filter(x => !x.isDestroyed()).forEach((win) => win.webContents.send("setVolume", .2));
                 } },
                 { label: "30%", type: "normal", click: () => {
-                    Object.values(pips).filter(x => !x.isDestroyed()).forEach((win) => win.webContents.send("setVolume", .3));
+                    Object.values(pipWindows).filter(x => !x.isDestroyed()).forEach((win) => win.webContents.send("setVolume", .3));
                 } },
                 { label: "40%", type: "normal", click: () => {
-                    Object.values(pips).filter(x => !x.isDestroyed()).forEach((win) => win.webContents.send("setVolume", .4));
+                    Object.values(pipWindows).filter(x => !x.isDestroyed()).forEach((win) => win.webContents.send("setVolume", .4));
                 } },
                 { label: "50%", type: "normal", click: () => {
-                    Object.values(pips).filter(x => !x.isDestroyed()).forEach((win) => win.webContents.send("setVolume", .5));
+                    Object.values(pipWindows).filter(x => !x.isDestroyed()).forEach((win) => win.webContents.send("setVolume", .5));
                 } },
                 { label: "60%", type: "normal", click: () => {
-                    Object.values(pips).filter(x => !x.isDestroyed()).forEach((win) => win.webContents.send("setVolume", .6));
+                    Object.values(pipWindows).filter(x => !x.isDestroyed()).forEach((win) => win.webContents.send("setVolume", .6));
                 } },
                 { label: "70%", type: "normal", click: () => {
-                    Object.values(pips).filter(x => !x.isDestroyed()).forEach((win) => win.webContents.send("setVolume", .7));
+                    Object.values(pipWindows).filter(x => !x.isDestroyed()).forEach((win) => win.webContents.send("setVolume", .7));
                 } },
                 { label: "80%", type: "normal", click: () => {
-                    Object.values(pips).filter(x => !x.isDestroyed()).forEach((win) => win.webContents.send("setVolume", .8));
+                    Object.values(pipWindows).filter(x => !x.isDestroyed()).forEach((win) => win.webContents.send("setVolume", .8));
                 } },
                 { label: "90%", type: "normal", click: () => {
-                    Object.values(pips).filter(x => !x.isDestroyed()).forEach((win) => win.webContents.send("setVolume", .9));
+                    Object.values(pipWindows).filter(x => !x.isDestroyed()).forEach((win) => win.webContents.send("setVolume", .9));
                 } },
                 { label: "100%", type: "normal", click: () => {
-                    Object.values(pips).filter(x => !x.isDestroyed()).forEach((win) => win.webContents.send("setVolume", 1));
+                    Object.values(pipWindows).filter(x => !x.isDestroyed()).forEach((win) => win.webContents.send("setVolume", 1));
                 } },
             ] }
         ] },
@@ -236,23 +230,10 @@ export const createTray = function() {
     tray.on("click", () => mainWindow || createMainWindow());
 }
 
-export const initializeStore = function() {
-    __store__.has("order") || __store__.set("order", channels);
-    __store__.has("channelPoints") || __store__.set("channelPoints", false);
-    __store__.has("auto-run-pip") || __store__.set("auto-run-pip", false);
-    // __store__.has("streamers") || __store__.set("streamers", channels);
-}
-
 export const bootstrap = function() {
-    global.authProvider = new ElectronAuthProvider({
-        clientId: "f79abi79zcv9e3mhf459mih16p0h5c",
-        redirectUri: "http://localhost/",
-    });
-    global.apiClient = new ApiClient({ authProvider: global.authProvider });
     createTray();
     createMainWindow();
-    initializeStore();
-    openNewStreamPIP();
+    openStreamingPIP();
 }
 
 if (!app.requestSingleInstanceLock())
@@ -277,28 +258,4 @@ app.on("second-instance",() => {
     mainWindow.focus();
 });
 
-import './ipc';
-
-ipcMain.on("openSelectPIP", async (event, arg) => {
-    if (pips[arg] && !pips[arg].isDestroyed()) {
-        pips[arg].show();
-        pips[arg].focus();
-        return;
-    }
-    const isStream = await apiClient.streams.getStreamByUserName(arg) ? true : false;
-    if(isStream){
-        await twitch.getStream(arg).then((res) => {
-            createPIPWindow(res[1].url, arg);
-        });
-    }
-});
-
-ipcMain.on("toggleMouse", (event, arg) => {
-    mouseIgnored = !mouseIgnored;
-    Object.values(pips).forEach((win) => {
-        if (!win.isDestroyed())
-            win.setIgnoreMouseEvents(mouseIgnored);
-    });
-});
-
-setInterval(openNewStreamPIP, 30 * 1000);
+setInterval(openStreamingPIP, 30 * 1000);

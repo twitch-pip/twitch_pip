@@ -1,0 +1,40 @@
+{
+    "productName": "Twitch PIP",
+    "appId": "com.twitchpip.twitchpip",
+    "directories": {
+        "buildResources": "./resources/installer/",
+        "output": "./dist/${version}",
+        "app": "."
+    },
+    "publish": [
+        {
+            "provider": "github",
+            "owner": "twitch-pip",
+            "repo": "twitch_pip",
+            "token": "< GH_TOKEN >"
+        }
+    ],
+    "mac": {
+        "target": [
+            "default"
+        ],
+        "icon": "assets/icon.icns"
+    },
+    "dmg": {
+        "title": "Twitch PIP",
+        "icon": "assets/icon.icns"
+    },
+    "win": {
+        "target": [
+            "nsis"
+        ],
+        "icon": "assets/icon.ico"
+    },
+    "nsis": {
+        "oneClick": false,
+        "allowToChangeInstallationDirectory": true,
+        "shortcutName": "Twitch PIP",
+        "deleteAppDataOnUninstall": true,
+        "perMachine": true
+    }
+}
