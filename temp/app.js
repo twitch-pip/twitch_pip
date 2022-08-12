@@ -120,13 +120,8 @@ const createPIPWindow = function (url, channelName) {
     window.setResizable(true);
     window.setIgnoreMouseEvents(mouseIgnored);
     window.on("closed", () => {
-        var _a, _b;
-        console.log((_a = chattingWindows[channelName]) === null || _a === void 0 ? void 0 : _a.closable);
-        if (!chattingWindows[channelName])
-            return;
-        if (chattingWindows[channelName].isDestroyed())
-            return;
-        ((_b = chattingWindows[channelName]) === null || _b === void 0 ? void 0 : _b.closable) && chattingWindows[channelName].close();
+        if (chattingWindows[channelName] && !chattingWindows[channelName].isDestroyed())
+            chattingWindows[channelName].close();
     });
     pipWindows[channelName] = window;
     if (constants_1.__store__.get("chatting", false))

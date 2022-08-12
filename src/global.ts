@@ -33,7 +33,7 @@ function initialize() {
     global.mouseIgnored = false;
     global.previousStreamState = {};
 }
-
+    
 initialize();
 
 export default {  };

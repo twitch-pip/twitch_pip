@@ -4,6 +4,15 @@ this.back.addEventListener("click", () => {
     window.location.href = './main.html';
 });
 
+this.register.addEventListener("click", () => {
+    let streamer = document.getElementById("streamer_id").value;
+    
+    if (streamer) {
+        storage.set("order", storage.get("order").concat(streamer));
+        location.reload();
+    }
+});
+
 (async () => {
     let info = await twitch.streamerStates("edit");
 

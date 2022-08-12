@@ -49,7 +49,8 @@ function beautyFollows(follows) {
         const upperUnit = Math.floor(follows / 10000);
         console.log(follows, upperUnit, unit);
         if (upperUnit === 0) {
-            return `팔로워 ${follows.toFixed(1) + units[unit]}명`;
+            follows = ( unit === 0 ) ? follows : follows.toFixed(1); 
+            return `팔로워 ${follows + units[unit]}명`;
         }
         follows = follows / 10000;
         unit++;

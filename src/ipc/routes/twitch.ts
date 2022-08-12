@@ -5,7 +5,7 @@ import Channel from "../ipc";
 
 export default class Twitch {
     @Channel("twitch", "streamerStates")
-    async streamerStates(event: IpcMainInvokeEvent, ...args: any[]) {
+    async streamerStates(event: IpcMainInvokeEvent, input: string, ...args: any[]) {
         const streamers = __store__.get("order", []) as string[];
         const res = await apiClient.users.getUsersByNames(streamers);
 
@@ -15,7 +15,7 @@ export default class Twitch {
                 "name": i.name,
                 "displayName": i.displayName,
             };
-            if (args[0] != "edit") {
+            if (input != "edit") {
                 const follows = await apiClient.users.getFollows({ followedUser: i.id, limit: 1 });
                 const isStream = await apiClient.streams.getStreamByUserId(i.id) ? true : false;
                 Object.assign(tmp, {

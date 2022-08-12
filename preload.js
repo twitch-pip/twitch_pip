@@ -49,7 +49,7 @@ contextBridge.exposeInMainWorld('pip', {
 });
 
 contextBridge.exposeInMainWorld('twitch', {
-    streamerStates: () => ipcRenderer.invoke('twitch.streamerStates'),
+    streamerStates: (input) => ipcRenderer.invoke('twitch.streamerStates', input),
 });
 
 contextBridge.exposeInMainWorld('update', {

@@ -21,7 +21,7 @@ Object.defineProperty(exports, "__esModule", { value: true });
 const constants_1 = require("../../constants");
 const ipc_1 = __importDefault(require("../ipc"));
 class Twitch {
-    streamerStates(event, ...args) {
+    streamerStates(event, input, ...args) {
         return __awaiter(this, void 0, void 0, function* () {
             const streamers = constants_1.__store__.get("order", []);
             const res = yield apiClient.users.getUsersByNames(streamers);
@@ -31,7 +31,7 @@ class Twitch {
                     "name": i.name,
                     "displayName": i.displayName,
                 };
-                if (args[0] != "edit") {
+                if (input != "edit") {
                     const follows = yield apiClient.users.getFollows({ followedUser: i.id, limit: 1 });
                     const isStream = (yield apiClient.streams.getStreamByUserId(i.id)) ? true : false;
                     Object.assign(tmp, {
