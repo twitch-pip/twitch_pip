@@ -20,3 +20,7 @@ hls.attachMedia(video);
 hls.on(Hls.Events.MANIFEST_PARSED, () => {
     video.play();
 });
+
+ipcRenderer.on("setVolume", (event, volume) => {
+    video.volume = volume;
+});
