@@ -1,5 +1,5 @@
 Arguments: 
-  C:\Program Files\nodejs\node.exe C:\Users\rmagu\AppData\Roaming\npm\node_modules\yarn\bin\yarn.js add --dev @types/twitch-m3u8
+  C:\Program Files\nodejs\node.exe C:\Users\rmagu\AppData\Roaming\npm\node_modules\yarn\bin\yarn.js deploy
 
 PATH: 
   C:\Program Files\Microsoft\jdk-11.0.12.7-hotspot\bin;C:\Python39\Scripts\;C:\Python39\;C:\Program Files (x86)\VMware\VMware Workstation\bin\;C:\Program Files\Python36\Scripts\;C:\Program Files\Python36\;C:\Program Files (x86)\Common Files\Oracle\Java\javapath;C:\Python38\Scripts\;C:\Python38\;C:\WINDOWS\system32;C:\WINDOWS;C:\WINDOWS\System32\Wbem;C:\WINDOWS\System32\WindowsPowerShell\v1.0\;C:\WINDOWS\System32\OpenSSH\;C:\Program Files\dotnet\;C:\Program Files\Microsoft SQL Server\130\Tools\Binn\;C:\ProgramData\chocolatey\bin;C:\Program Files\Git\cmd;C:\Program Files\Git LFS;C:\Gradle\gradle-6.7\bin;C:\src\flutter\bin;C:\src\curl\bin;C:\Program Files\CMake\bin;C;C:\MinGW\bin;C:\Program Files (x86)\NVIDIA Corporation\PhysX\Common;C:\ffmpeg\bin;C:\Python;C:\Python27\;C:\Users\rmagu\AppData\Roaming\nvm;C:\Program Files\nodejs;C:\WINDOWS\system32;C:\WINDOWS;C:\WINDOWS\System32\Wbem;C:\WINDOWS\System32\WindowsPowerShell\v1.0\;C:\WINDOWS\System32\OpenSSH\;C:\oracle\instantclient_21_3;C:\Program Files (x86)\Windows Kits\10\Windows Performance Toolkit\;C:\Program Files\nodejs\;C:\Program Files\MongoDB\Server\5.0\bin;C:\Program Files\Microsoft SQL Server\150\Tools\Binn\;C:\Program Files\Microsoft SQL Server\Client SDK\ODBC\170\Tools\Binn\;C:\Users\rmagu\.cargo\bin;C:\Users\rmagu\AppData\Local\Microsoft\WindowsApps;C:\Users\rmagu\.dotnet\tools;C:\Users\rmagu\AppData\Local\Programs\Microsoft VS Code\bin;C:\Users\rmagu\AppData\Local\GitHubDesktop\bin;C:\src\flutter\bin;C:\src\curl\bin;C:\Program Files\Bandizip\;C:\Users\rmagu\AppData\Local\Programs\Fiddler;C:\Users\rmagu\AppData\Local\Microsoft\WindowsApps;C:\Users\rmagu\AppData\Roaming\nvm;C:\Program Files\nodejs;C:\Users\rmagu\AppData\Roaming\npm;C:\Users\rmagu\.dotnet\tools
@@ -14,45 +14,54 @@ Platform:
   win32 x64
 
 Trace: 
-  Error: https://registry.npmjs.org/@types%2ftwitch-m3u8: Not found
-      at Request.params.callback [as _callback] (C:\Users\rmagu\AppData\Roaming\npm\node_modules\yarn\lib\cli.js:66992:18)
-      at Request.self.callback (C:\Users\rmagu\AppData\Roaming\npm\node_modules\yarn\lib\cli.js:140763:22)
-      at Request.emit (node:events:390:28)
-      at Request.<anonymous> (C:\Users\rmagu\AppData\Roaming\npm\node_modules\yarn\lib\cli.js:141735:10)
-      at Request.emit (node:events:390:28)
-      at IncomingMessage.<anonymous> (C:\Users\rmagu\AppData\Roaming\npm\node_modules\yarn\lib\cli.js:141657:12)
-      at Object.onceWrapper (node:events:509:28)
-      at IncomingMessage.emit (node:events:402:35)
-      at endReadableNT (node:internal/streams/readable:1343:12)
-      at processTicksAndRejections (node:internal/process/task_queues:83:21)
+  SyntaxError: C:\Users\rmagu\Documents\GitHub\twitch_pip\package.json: Unexpected token } in JSON at position 148
+      at JSON.parse (<anonymous>)
+      at C:\Users\rmagu\AppData\Roaming\npm\node_modules\yarn\lib\cli.js:1625:59
+      at Generator.next (<anonymous>)
+      at step (C:\Users\rmagu\AppData\Roaming\npm\node_modules\yarn\lib\cli.js:310:30)
+      at C:\Users\rmagu\AppData\Roaming\npm\node_modules\yarn\lib\cli.js:321:13
 
 npm manifest: 
   {
     "name": "twitch_pip",
-    "version": "0.2.1",
+    "version": "1.0.0",
     "description": "",
-    "main": "app.js",
+    "author": {
+      "name": "lee dongsik",
+      "email": "id9947017@gmail.com",
+    },
+    "main": "temp/app.js",
     "scripts": {
-      "dev": "(tsc -b) && (electron app.js)",
-      "test": "(tsc -b) && (electron app.js) && (exit 1)",
-      "build:osx": "build --mac",
-      "build:linux": "npm run build:linux32 && npm run build:linux64",
-      "build:linux32": "build --linux --ia32",
-      "build:linux64": "build --linux --x64",
-      "build:win": "npm run build:win32 && npm run build:win64",
-      "build:win32": "build --win --ia32",
-      "build:win64": "build --win --x64"
+      "dev": "(rimraf temp) && (mkdir temp) && (tsc -b) && (electron .)",
+      "test": "(tsc -b) && (electron .) && (exit 1)",
+      "pack": "electron-builder --dir",
+      "dist": "electron-builder",
+      "build": "npm run build:linux && npm run build:win",
+      "build:osx": "electron-builder --mac --publish onTagOrDraft",
+      "build:linux": "electron-builder --linux --ia32 --x64 --publish onTagOrDraft",
+      "build:linux32": "electron-builder --linux --ia32 --publish onTagOrDraft",
+      "build:linux64": "electron-builder --linux --x64 --publish onTagOrDraft",
+      "build:win": "electron-builder --win --ia32 --x64 --publish onTagOrDraft",
+      "build:win32": "electron-builder --win --ia32 --publish onTagOrDraft",
+      "build:win64": "electron-builder build --win --x64 --publish onTagOrDraft",
+      "deploy": "npm run build:linux && npm run build:win",
+      "deploy:osx": "electron-builder --mac --publish always",
+      "deploy:linux": "electron-builder --linux --ia32 --x64 --publish always",
+      "deploy:linux32": "electron-builder --linux --ia32 --publish always",
+      "deploy:linux64": "electron-builder --linux --x64 --publish always",
+      "deploy:win": "electron-builder --win --ia32 --x64 --publish always",
+      "deploy:win32": "electron-builder --win --ia32 --publish always",
+      "deploy:win64": "electron-builder --win --x64 --publish always"
     },
     "repository": {
       "type": "git",
-      "url": "https://github.com/kewool/Isekaidol_twitch_pip.git"
+      "url": "https://github.com/twitch-pip/twitch_pip.git"
     },
-    "author": "kewool",
     "license": "ISC",
     "bugs": {
-      "url": "https://github.com/kewool/Isekaidol_twitch_pip/issues"
+      "url": "https://github.com/twitch-pip/twitch_pip/issues"
     },
-    "homepage": "https://github.com/kewool/Isekaidol_twitch_pip#readme",
+    "homepage": "https://github.com/twitch-pip/twitch_pip#readme",
     "dependencies": {
       "@twurple/api": "^5.0.19",
       "@twurple/auth": "^5.0.19",
@@ -64,56 +73,11 @@ npm manifest:
     },
     "devDependencies": {
       "electron": "^18.0.2",
-      "electron-builder": "^23.0.3",
+      "electron-builder": "^23.3.3",
       "electron-log": "^4.4.6",
       "eslint": "^8.14.0",
-      "eslint-config-google": "^0.14.0"
-    },
-    "build": {
-      "publish": [
-        {
-          "provider": "github",
-          "owner": "rmagur1203",
-          "repo": "twitch_pip"
-        }
-      ],
-      "productName": "Twitch PIP",
-      "appId": "com.rmagur1203.twitchpip",
-      "asar": true,
-      "protocols": {
-        "name": "Twitch PIP",
-        "schemes": [
-          "Twitch PIP"
-        ]
-      },
-      "win": {
-        "target": [
-          "nsis"
-        ],
-        "icon": "assets/icon.ico"
-      },
-      "mac": {
-        "target": [
-          "default"
-        ],
-        "icon": "assets/icon.icns"
-      },
-      "dmg": {
-        "title": "Twitch PIP",
-        "icon": "assets/icon.icns"
-      },
-      "nsis": {
-        "oneClick": false,
-        "allowToChangeInstallationDirectory": true,
-        "shortcutName": "트위치 PIP",
-        "deleteAppDataOnUninstall": true,
-        "perMachine": true
-      },
-      "directories": {
-        "buildResources": "./resources/installer/",
-        "output": "./dist/",
-        "app": "."
-      }
+      "eslint-config-google": "^0.14.0",
+      "rimraf": "^3.0.2"
     }
   }
 
@@ -1134,7 +1098,7 @@ Lockfile:
     dependencies:
       jake "^10.8.5"
   
-  electron-builder@^23.0.3:
+  electron-builder@^23.3.3:
     version "23.3.3"
     resolved "https://registry.yarnpkg.com/electron-builder/-/electron-builder-23.3.3.tgz#88d4e584a99b9e36ca4e8432b1163a1ef877355f"
     integrity sha512-mFYYdhoFPKevP6y5uaaF3dusmB2OtQ/HnwwpyOePeU7QDS0SEIAUokQsHUanAiJAZcBqtY7iyLBgX18QybdFFw==

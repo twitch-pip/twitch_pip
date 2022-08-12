@@ -17,4 +17,12 @@ electron_updater_1.autoUpdater.on("checking-for-update", () => {
 }).on("update-not-available", () => {
     console.log("update-not-available");
     mainWindow === null || mainWindow === void 0 ? void 0 : mainWindow.webContents.send("update.notAvailable");
+}).on("error", (err) => {
+    console.log("error", err);
+    mainWindow === null || mainWindow === void 0 ? void 0 : mainWindow.webContents.send("update.error", err);
+}).on("download-progress", (progressObj) => {
+    console.log("download-progress", progressObj);
+    mainWindow === null || mainWindow === void 0 ? void 0 : mainWindow.webContents.send("update.progress", progressObj);
+}).on("update-downloaded", () => {
+    console.log("update-downloaded");
 });

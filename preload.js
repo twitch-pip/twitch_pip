@@ -45,7 +45,7 @@ contextBridge.exposeInMainWorld('main', {
 
 contextBridge.exposeInMainWorld('pip', {
     toggleMouse: () => ipcRenderer.invoke('pip.toggleMouse'),
-    open: () => ipcRenderer.invoke('pip.open'),
+    open: (id) => ipcRenderer.invoke('pip.open', id),
 });
 
 contextBridge.exposeInMainWorld('twitch', {

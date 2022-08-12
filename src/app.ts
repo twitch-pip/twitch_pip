@@ -1,5 +1,5 @@
 import path from "path";
-import { app, BrowserWindow, ipcMain, Tray, Menu, shell } from "electron";
+import { app, BrowserWindow, ipcMain, Tray, Menu, shell, screen } from "electron";
 import { ApiClient } from "@twurple/api";
 import twitch from "twitch-m3u8";
 
@@ -116,8 +116,8 @@ export const createPIPWindow = function(url: string, channelName: string) {
         frame: false,
         resizable: false,
         skipTaskbar: true,
-        x: 1390,
-        y: 710,
+        x: screen.getPrimaryDisplay().workAreaSize.width - 480 - 10,
+        y: screen.getPrimaryDisplay().workAreaSize.height - 270 - 10,
     });
     window.loadURL("file://" + path.join(__public__, 'pages', `pip.html?url=${url}&name=${channelName}`));
     window.setAlwaysOnTop(true, "screen-saver");

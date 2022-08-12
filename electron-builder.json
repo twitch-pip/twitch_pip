@@ -10,8 +10,7 @@
         {
             "provider": "github",
             "owner": "twitch-pip",
-            "repo": "twitch_pip",
-            "token": "< GH_TOKEN >"
+            "repo": "twitch_pip"
         }
     ],
     "mac": {
@@ -24,9 +23,22 @@
         "title": "Twitch PIP",
         "icon": "assets/icon.icns"
     },
+    "linux": {
+        "target": [
+            "AppImage",
+            "deb",
+            "rpm",
+            "zip",
+            "tar.gz",
+            "tar.xz"
+        ],
+        "icon": "assets/icon.jpg"
+    },
     "win": {
         "target": [
-            "nsis"
+            "zip",
+            "nsis",
+            "portable"
         ],
         "icon": "assets/icon.ico"
     },

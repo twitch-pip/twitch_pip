@@ -2,6 +2,10 @@
   "name": "twitch_pip",
   "version": "1.0.0",
   "description": "",
+  "author": {
+    "name": "lee dongsik",
+    "email": "id9947017@gmail.com"
+  },
   "main": "temp/app.js",
   "scripts": {
     "dev": "(rimraf temp) && (mkdir temp) && (tsc -b) && (electron .)",
@@ -29,7 +33,6 @@
     "type": "git",
     "url": "https://github.com/twitch-pip/twitch_pip.git"
   },
-  "author": "kewool",
   "license": "ISC",
   "bugs": {
     "url": "https://github.com/twitch-pip/twitch_pip/issues"

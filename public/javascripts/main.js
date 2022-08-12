@@ -47,12 +47,7 @@ function beautyFollows(follows) {
     }
 }
 
-function openSelect(id) {
-    pip.open(id);
-}
-
 // Runner
-
 (async () => {
     let version = await app.getVersion();
     this.version_num.innerText = version;
@@ -65,10 +60,10 @@ storage.get("order").forEach(x => {
     div.draggable = true;
     div.addEventListener("click", function (ev) {
         this.removeEventListener("click", arguments.callee);
-        openSelect(x);
+        pip.open(x);
         setTimeout((element) => {
             element.addEventListener("click", function () {
-                openSelect(x);
+                pip.open(x);
             });
         }, 3000, this);
     });
