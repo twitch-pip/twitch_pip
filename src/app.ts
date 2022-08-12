@@ -28,7 +28,7 @@ const openStreamingPIP = async () => {
     }
 }
 
-const createMainWindow = function() {
+const createMainWindow = function () {
     if (mainWindow && !mainWindow.isDestroyed()) return;
 
     mainWindow = new BrowserWindow({
@@ -81,7 +81,7 @@ const createMainWindow = function() {
         mainWindow = null;
     });
 
-    mainWindow.webContents.setWindowOpenHandler(function({ url }) {
+    mainWindow.webContents.setWindowOpenHandler(function ({ url }) {
         shell.openExternal(url);
         return {
             action: "deny",
@@ -91,7 +91,7 @@ const createMainWindow = function() {
     mainWindow.loadFile(path.join(__public__, "pages", "main.html"));
 }
 
-export const createPIPWindow = function(url: string, channelName: string) {
+export const createPIPWindow = function (url: string, channelName: string) {
     if (pipWindows[channelName] && !pipWindows[channelName].isDestroyed()) return;
 
     const window = new BrowserWindow({
@@ -125,7 +125,7 @@ export const createPIPWindow = function(url: string, channelName: string) {
         createChattingWindow(channelName);
 }
 
-export const createChattingWindow = function(channelName: string) {
+export const createChattingWindow = function (channelName: string) {
     if (!__store__.get("chatting", false)) return;
     if (chattingWindows[channelName] && !chattingWindows[channelName].isDestroyed()) return;
 
@@ -145,88 +145,144 @@ export const createChattingWindow = function(channelName: string) {
         },
     });
     window.loadURL(`https://www.twitch.tv/embed/${channelName}/chat?parent=localhost${options}`);
-    window.webContents.setAudioMuted(true);
+
+    if (__store__.get("auto-point", false)) {
+        window.webContents.executeJavaScript(`
+            setInterval(() => {
+                document.querySelector('[aria-label="보너스 받기"]')?.click();
+                let point = document.querySelector('[aria-label="남은 포인트"]').innerText;
+                console.log("rewarded");
+                console.log("point:", point);
+            }, 30 * 1000);
+        `);
+    }
 
     chattingWindows[channelName] = window;
 }
 
-export const createTray = function() {
+export const createTray = function () {
     tray = new Tray(path.join(__asset__, "icon.jpg"));
 
     tray.setToolTip("트위치 pip");
     tray.setContextMenu(Menu.buildFromTemplate([
         { label: "종료", type: "normal", role: "quit" },
-        { label: "PIP 창", type: "submenu", submenu: [
-            { label: "투명도 조절", type: "submenu", submenu: [
-                { label: "10%", type: "normal", click: () => {
-                    Object.values(pipWindows).filter(x => !x.isDestroyed()).forEach((win) => win.setOpacity(.1));
-                } },
-                { label: "20%", type: "normal", click: () => {
-                    Object.values(pipWindows).filter(x => !x.isDestroyed()).forEach((win) => win.setOpacity(.2));
-                } },
-                { label: "30%", type: "normal", click: () => {
-                    Object.values(pipWindows).filter(x => !x.isDestroyed()).forEach((win) => win.setOpacity(.3));
-                } },
-                { label: "40%", type: "normal", click: () => {
-                    Object.values(pipWindows).filter(x => !x.isDestroyed()).forEach((win) => win.setOpacity(.4));
-                } },
-                { label: "50%", type: "normal", click: () => {
-                    Object.values(pipWindows).filter(x => !x.isDestroyed()).forEach((win) => win.setOpacity(.5));
-                } },
-                { label: "60%", type: "normal", click: () => {
-                    Object.values(pipWindows).filter(x => !x.isDestroyed()).forEach((win) => win.setOpacity(.6));
-                } },
-                { label: "70%", type: "normal", click: () => {
-                    Object.values(pipWindows).filter(x => !x.isDestroyed()).forEach((win) => win.setOpacity(.7));
-                } },
-                { label: "80%", type: "normal", click: () => {
-                    Object.values(pipWindows).filter(x => !x.isDestroyed()).forEach((win) => win.setOpacity(.8));
-                } },
-                { label: "90%", type: "normal", click: () => {
-                    Object.values(pipWindows).filter(x => !x.isDestroyed()).forEach((win) => win.setOpacity(.9));
-                } },
-                { label: "100%", type: "normal", click: () => {
-                    Object.values(pipWindows).filter(x => !x.isDestroyed()).forEach((win) => win.setOpacity(1));
-                } },
-            ] },
-            { label: "소리 조절", type: "submenu", submenu: [
-                { label: "10%", type: "normal", click: () => {
-                    Object.values(pipWindows).filter(x => !x.isDestroyed()).forEach((win) => win.webContents.send("setVolume", .1));
-                } },
-                { label: "20%", type: "normal", click: () => {
-                    Object.values(pipWindows).filter(x => !x.isDestroyed()).forEach((win) => win.webContents.send("setVolume", .2));
-                } },
-                { label: "30%", type: "normal", click: () => {
-                    Object.values(pipWindows).filter(x => !x.isDestroyed()).forEach((win) => win.webContents.send("setVolume", .3));
-                } },
-                { label: "40%", type: "normal", click: () => {
-                    Object.values(pipWindows).filter(x => !x.isDestroyed()).forEach((win) => win.webContents.send("setVolume", .4));
-                } },
-                { label: "50%", type: "normal", click: () => {
-                    Object.values(pipWindows).filter(x => !x.isDestroyed()).forEach((win) => win.webContents.send("setVolume", .5));
-                } },
-                { label: "60%", type: "normal", click: () => {
-                    Object.values(pipWindows).filter(x => !x.isDestroyed()).forEach((win) => win.webContents.send("setVolume", .6));
-                } },
-                { label: "70%", type: "normal", click: () => {
-                    Object.values(pipWindows).filter(x => !x.isDestroyed()).forEach((win) => win.webContents.send("setVolume", .7));
-                } },
-                { label: "80%", type: "normal", click: () => {
-                    Object.values(pipWindows).filter(x => !x.isDestroyed()).forEach((win) => win.webContents.send("setVolume", .8));
-                } },
-                { label: "90%", type: "normal", click: () => {
-                    Object.values(pipWindows).filter(x => !x.isDestroyed()).forEach((win) => win.webContents.send("setVolume", .9));
-                } },
-                { label: "100%", type: "normal", click: () => {
-                    Object.values(pipWindows).filter(x => !x.isDestroyed()).forEach((win) => win.webContents.send("setVolume", 1));
-                } },
-            ] }
-        ] },
+        {
+            label: "PIP 창", type: "submenu", submenu: [
+                {
+                    label: "투명도 조절", type: "submenu", submenu: [
+                        {
+                            label: "10%", type: "normal", click: () => {
+                                Object.values(pipWindows).filter(x => !x.isDestroyed()).forEach((win) => win.setOpacity(.1));
+                            }
+                        },
+                        {
+                            label: "20%", type: "normal", click: () => {
+                                Object.values(pipWindows).filter(x => !x.isDestroyed()).forEach((win) => win.setOpacity(.2));
+                            }
+                        },
+                        {
+                            label: "30%", type: "normal", click: () => {
+                                Object.values(pipWindows).filter(x => !x.isDestroyed()).forEach((win) => win.setOpacity(.3));
+                            }
+                        },
+                        {
+                            label: "40%", type: "normal", click: () => {
+                                Object.values(pipWindows).filter(x => !x.isDestroyed()).forEach((win) => win.setOpacity(.4));
+                            }
+                        },
+                        {
+                            label: "50%", type: "normal", click: () => {
+                                Object.values(pipWindows).filter(x => !x.isDestroyed()).forEach((win) => win.setOpacity(.5));
+                            }
+                        },
+                        {
+                            label: "60%", type: "normal", click: () => {
+                                Object.values(pipWindows).filter(x => !x.isDestroyed()).forEach((win) => win.setOpacity(.6));
+                            }
+                        },
+                        {
+                            label: "70%", type: "normal", click: () => {
+                                Object.values(pipWindows).filter(x => !x.isDestroyed()).forEach((win) => win.setOpacity(.7));
+                            }
+                        },
+                        {
+                            label: "80%", type: "normal", click: () => {
+                                Object.values(pipWindows).filter(x => !x.isDestroyed()).forEach((win) => win.setOpacity(.8));
+                            }
+                        },
+                        {
+                            label: "90%", type: "normal", click: () => {
+                                Object.values(pipWindows).filter(x => !x.isDestroyed()).forEach((win) => win.setOpacity(.9));
+                            }
+                        },
+                        {
+                            label: "100%", type: "normal", click: () => {
+                                Object.values(pipWindows).filter(x => !x.isDestroyed()).forEach((win) => win.setOpacity(1));
+                            }
+                        },
+                    ]
+                },
+                {
+                    label: "소리 조절", type: "submenu", submenu: [
+                        {
+                            label: "10%", type: "normal", click: () => {
+                                Object.values(pipWindows).filter(x => !x.isDestroyed()).forEach((win) => win.webContents.send("setVolume", .1));
+                            }
+                        },
+                        {
+                            label: "20%", type: "normal", click: () => {
+                                Object.values(pipWindows).filter(x => !x.isDestroyed()).forEach((win) => win.webContents.send("setVolume", .2));
+                            }
+                        },
+                        {
+                            label: "30%", type: "normal", click: () => {
+                                Object.values(pipWindows).filter(x => !x.isDestroyed()).forEach((win) => win.webContents.send("setVolume", .3));
+                            }
+                        },
+                        {
+                            label: "40%", type: "normal", click: () => {
+                                Object.values(pipWindows).filter(x => !x.isDestroyed()).forEach((win) => win.webContents.send("setVolume", .4));
+                            }
+                        },
+                        {
+                            label: "50%", type: "normal", click: () => {
+                                Object.values(pipWindows).filter(x => !x.isDestroyed()).forEach((win) => win.webContents.send("setVolume", .5));
+                            }
+                        },
+                        {
+                            label: "60%", type: "normal", click: () => {
+                                Object.values(pipWindows).filter(x => !x.isDestroyed()).forEach((win) => win.webContents.send("setVolume", .6));
+                            }
+                        },
+                        {
+                            label: "70%", type: "normal", click: () => {
+                                Object.values(pipWindows).filter(x => !x.isDestroyed()).forEach((win) => win.webContents.send("setVolume", .7));
+                            }
+                        },
+                        {
+                            label: "80%", type: "normal", click: () => {
+                                Object.values(pipWindows).filter(x => !x.isDestroyed()).forEach((win) => win.webContents.send("setVolume", .8));
+                            }
+                        },
+                        {
+                            label: "90%", type: "normal", click: () => {
+                                Object.values(pipWindows).filter(x => !x.isDestroyed()).forEach((win) => win.webContents.send("setVolume", .9));
+                            }
+                        },
+                        {
+                            label: "100%", type: "normal", click: () => {
+                                Object.values(pipWindows).filter(x => !x.isDestroyed()).forEach((win) => win.webContents.send("setVolume", 1));
+                            }
+                        },
+                    ]
+                }
+            ]
+        },
     ]));
     tray.on("click", () => mainWindow || createMainWindow());
 }
 
-export const bootstrap = function() {
+export const bootstrap = function () {
     createTray();
     createMainWindow();
     openStreamingPIP();
@@ -247,10 +303,10 @@ app.on("window-all-closed", (event: any) => {
     event.preventDefault();
 });
 
-app.on("second-instance",() => {
-    if(!mainWindow)
+app.on("second-instance", () => {
+    if (!mainWindow)
         return createMainWindow();
-    if(!mainWindow.isVisible()) mainWindow.show();
+    if (!mainWindow.isVisible()) mainWindow.show();
     mainWindow.focus();
 });
 

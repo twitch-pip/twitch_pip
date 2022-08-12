@@ -149,6 +149,14 @@ const createChattingWindow = function (channelName) {
     });
     window.loadURL(`https://www.twitch.tv/embed/${channelName}/chat?parent=localhost${options}`);
     window.webContents.setAudioMuted(true);
+    window.webContents.executeJavaScript(`
+        setInterval(() => {
+            document.querySelector('[aria-label="보너스 받기"]')?.click();
+            let point = document.querySelector('[aria-label="남은 포인트"]').innerText;
+            console.log("rewarded");
+            console.log("point:", point);
+        }, 30 * 1000);
+    `);
     chattingWindows[channelName] = window;
 };
 exports.createChattingWindow = createChattingWindow;

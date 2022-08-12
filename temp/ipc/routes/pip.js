@@ -28,6 +28,7 @@ class PIP {
             if (!win.isDestroyed())
                 win.setIgnoreMouseEvents(mouseIgnored);
         });
+        return mouseIgnored;
     }
     open(event, id, ...args) {
         return __awaiter(this, void 0, void 0, function* () {
