@@ -20,6 +20,10 @@ export const __store__ = new ElectronStore({
             type: "boolean",
             default: true,
         },
+        "auto-point": {
+            type: "boolean",
+            default: false,
+        },
         "auto-run-pip": {
             type: "boolean",
             default: false,

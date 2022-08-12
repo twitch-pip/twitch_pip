@@ -11,6 +11,7 @@ export default class PIP {
             if (!win.isDestroyed())
                 win.setIgnoreMouseEvents(mouseIgnored);
         });
+        return mouseIgnored;
     }
 
     @Channel("pip", "open")

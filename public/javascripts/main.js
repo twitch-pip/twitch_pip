@@ -11,8 +11,9 @@ this.refresh.addEventListener("click", () => {
     location.reload();
 });
 
-this.mouse.addEventListener("click", () => {
-    pip.toggleMouse();
+this.mouse.addEventListener("click", async () => {
+    let state = await pip.toggleMouse();
+    this.mouse.children[0].src = `../images/mouse${state ? "_off" : "_on"}.png`;
 });
 
 this.chatting.addEventListener("click", () => {

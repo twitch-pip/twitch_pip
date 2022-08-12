@@ -7,8 +7,6 @@ this.back.addEventListener("click", () => {
 (async () => {
     let info = await twitch.streamerStates("edit");
 
-    console.log(info)
-
     for (let name of storage.get('order')) {
         let div = document.createElement("div");
         div.className = "info";
@@ -19,7 +17,7 @@ this.back.addEventListener("click", () => {
         remove.innerHTML = "X";
         remove.addEventListener("click", () => {
             storage.set("order", storage.get("order").filter((e) => e !== name));
-            location.reload()
+            location.reload();
         });
         div.append(remove);
 

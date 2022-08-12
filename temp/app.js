@@ -120,13 +120,8 @@ const createPIPWindow = function (url, channelName) {
     window.setResizable(true);
     window.setIgnoreMouseEvents(mouseIgnored);
     window.on("closed", () => {
-        var _a, _b;
-        console.log((_a = chattingWindows[channelName]) === null || _a === void 0 ? void 0 : _a.closable);
-        if (!chattingWindows[channelName])
-            return;
-        if (chattingWindows[channelName].isDestroyed())
-            return;
-        ((_b = chattingWindows[channelName]) === null || _b === void 0 ? void 0 : _b.closable) && chattingWindows[channelName].close();
+        if (chattingWindows[channelName] && !chattingWindows[channelName].isDestroyed())
+            chattingWindows[channelName].close();
     });
     pipWindows[channelName] = window;
     if (constants_1.__store__.get("chatting", false))
@@ -154,6 +149,14 @@ const createChattingWindow = function (channelName) {
     });
     window.loadURL(`https://www.twitch.tv/embed/${channelName}/chat?parent=localhost${options}`);
     window.webContents.setAudioMuted(true);
+    window.webContents.executeJavaScript(`
+        setInterval(() => {
+            document.querySelector('[aria-label="보너스 받기"]')?.click();
+            let point = document.querySelector('[aria-label="남은 포인트"]').innerText;
+            console.log("rewarded");
+            console.log("point:", point);
+        }, 30 * 1000);
+    `);
     chattingWindows[channelName] = window;
 };
 exports.createChattingWindow = createChattingWindow;
