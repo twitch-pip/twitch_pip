@@ -236,7 +236,7 @@ a:link{
     color: #038cfc;
 }
 
-.channelPoints{
+.setting {
     color:#efeff1;
     font-size: 14px;
     font-family: 'Noto Sans KR', sans-serif;
@@ -244,13 +244,13 @@ a:link{
     display: flex;
     align-items: center;
 }
-.channelPoints span{
+.setting span{
     margin-right: 4px;
 }
-.channelPoints input{
+.setting input{
     display:none;
 }
-.channelPoints input + label{
+.setting input + label{
     display:block;
     margin-top:1px;
     width:14px;
@@ -260,10 +260,10 @@ a:link{
     box-sizing: border-box;
     border: 1px solid #595966;
 }
-.channelPoints input:checked + label{
+.setting input:checked + label{
     background-color: #0e0e10;
 }
-.channelPoints input:checked + label::after{
+.setting input:checked + label::after{
     content:"";
     width:6px;
     height:6px;

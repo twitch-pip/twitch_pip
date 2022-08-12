@@ -68,18 +68,6 @@ const createMainWindow = function() {
             label: "Debug",
             submenu: [
                 {
-                    label: "Show point windows",
-                    click: () => {
-                        Object.values(pointWindows).forEach((win) => win.show());
-                    }
-                },
-                {
-                    label: "Hide point windows",
-                    click: () => {
-                        Object.values(pointWindows).forEach((win) => win.hide());
-                    }
-                },
-                {
                     label: "Config Editor",
                     click: () => {
                         __store__.openInEditor();
@@ -126,24 +114,40 @@ export const createPIPWindow = function(url: string, channelName: string) {
     window.setResizable(true);
     window.setIgnoreMouseEvents(mouseIgnored);
 
+    window.on("closed", () => {
+        if (chattingWindows[channelName] && !chattingWindows[channelName].isDestroyed())
+            chattingWindows[channelName].close();
+    });
+
     pipWindows[channelName] = window;
 
-    if (__store__.get("channelPoints", false))
-        createPointWindow(channelName);
+    if (__store__.get("chatting", false))
+        createChattingWindow(channelName);
 }
 
-export const createPointWindow = function(channelName: string) {
-    if (!__store__.get("channelPoints", false)) return;
-    if (pointWindows[channelName] && !pointWindows[channelName].isDestroyed()) return;
+export const createChattingWindow = function(channelName: string) {
+    if (!__store__.get("chatting", false)) return;
+    if (chattingWindows[channelName] && !chattingWindows[channelName].isDestroyed()) return;
+
+    let options = "";
+    if (__store__.get("darktheme", false))
+        options += "&darkpopout";
 
     const window = new BrowserWindow({
-        show: false,
+        width: 340,
+        height: 677,
+        title: `${channelName}'s Live Chatting`,
+        icon: path.join(__public__, "images", "favicon-twitch.png"),
         autoHideMenuBar: true,
+        webPreferences: {
+            contextIsolation: true,
+            preload: path.join(app.getAppPath(), 'preload.js')
+        },
     });
-    window.loadURL("https://twitch.tv/" + channelName);
+    window.loadURL(`https://www.twitch.tv/embed/${channelName}/chat?parent=localhost${options}`);
     window.webContents.setAudioMuted(true);
 
-    pointWindows[channelName] = window;
+    chattingWindows[channelName] = window;
 }
 
 export const createTray = function() {
@@ -152,14 +156,6 @@ export const createTray = function() {
     tray.setToolTip("트위치 pip");
     tray.setContextMenu(Menu.buildFromTemplate([
         { label: "종료", type: "normal", role: "quit" },
-        { label: "포인트 창", type: "submenu", submenu: [
-            { label: "열기", type: "normal", click: () => {
-                Object.values(pointWindows).filter(x => !x.isDestroyed()).forEach((win) => win.show());
-            } },
-            { label: "닫기", type: "normal", click: () => {
-                Object.values(pointWindows).filter(x => !x.isDestroyed()).forEach((win) => win.hide());
-            } },
-        ] },
         { label: "PIP 창", type: "submenu", submenu: [
             { label: "투명도 조절", type: "submenu", submenu: [
                 { label: "10%", type: "normal", click: () => {

@@ -12,9 +12,13 @@ export const __store__ = new ElectronStore({
             type: "array",
             default: defaultChannels,
         },
-        channelPoints: {
+        chatting: {
             type: "boolean",
-            default: false,
+            default: true,
+        },
+        darktheme: {
+            type: "boolean",
+            default: true,
         },
         "auto-run-pip": {
             type: "boolean",
