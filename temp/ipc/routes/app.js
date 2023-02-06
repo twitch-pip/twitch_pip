@@ -10,7 +10,7 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 };
 Object.defineProperty(exports, "__esModule", { value: true });
 const electron_1 = require("electron");
-const ipc_1 = __importDefault(require("../ipc"));
+const channel_1 = __importDefault(require("../channel"));
 class App {
     getVersion() {
         return electron_1.app.getVersion();
@@ -20,9 +20,9 @@ class App {
     }
 }
 __decorate([
-    (0, ipc_1.default)("app", "getVersion")
+    (0, channel_1.default)("app", "getVersion")
 ], App.prototype, "getVersion", null);
 __decorate([
-    (0, ipc_1.default)("app", "quit")
+    (0, channel_1.default)("app", "quit")
 ], App.prototype, "quit", null);
 exports.default = App;

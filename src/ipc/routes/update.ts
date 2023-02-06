@@ -1,6 +1,6 @@
 import { IpcMainInvokeEvent } from "electron";
 import { autoUpdater } from "electron-updater";
-import Channel from "../ipc";
+import Channel from "../channel";
 
 export default class Update {
     @Channel("update", "install")

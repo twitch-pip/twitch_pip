@@ -5,10 +5,6 @@ app.on("ready", () => {
     autoUpdater.checkForUpdates();
 });
 
-autoUpdater.on("update-downloaded", () => {
-    mainWindow?.webContents.send("update.downloaded");
-})
-
 autoUpdater.on("checking-for-update", () => {
     console.log("checking-for-update");
     mainWindow?.webContents.send("update.checking");
@@ -26,4 +22,5 @@ autoUpdater.on("checking-for-update", () => {
     mainWindow?.webContents.send("update.progress", progressObj);
 }).on("update-downloaded", () => {
     console.log("update-downloaded");
+    mainWindow?.webContents.send("update.downloaded");
 });

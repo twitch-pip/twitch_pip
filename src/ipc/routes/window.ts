@@ -1,5 +1,5 @@
 import { app, BrowserWindow, IpcMainInvokeEvent } from "electron";
-import Channel from "../ipc";
+import Channel from "../channel";
 
 export default class Window {
     @Channel("window", "close")

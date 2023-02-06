@@ -19,7 +19,7 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 };
 Object.defineProperty(exports, "__esModule", { value: true });
 const constants_1 = require("../../constants");
-const ipc_1 = __importDefault(require("../ipc"));
+const channel_1 = __importDefault(require("../channel"));
 class Twitch {
     streamerStates(event, input, ...args) {
         return __awaiter(this, void 0, void 0, function* () {
@@ -48,6 +48,6 @@ class Twitch {
     }
 }
 __decorate([
-    (0, ipc_1.default)("twitch", "streamerStates")
+    (0, channel_1.default)("twitch", "streamerStates")
 ], Twitch.prototype, "streamerStates", null);
 exports.default = Twitch;

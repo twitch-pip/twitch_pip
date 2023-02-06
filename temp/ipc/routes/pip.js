@@ -20,7 +20,7 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 Object.defineProperty(exports, "__esModule", { value: true });
 const app_1 = require("../../app");
 const twitch_m3u8_1 = __importDefault(require("twitch-m3u8"));
-const ipc_1 = __importDefault(require("../ipc"));
+const channel_1 = __importDefault(require("../channel"));
 class PIP {
     toggleMouse() {
         mouseIgnored = !mouseIgnored;
@@ -47,9 +47,9 @@ class PIP {
     }
 }
 __decorate([
-    (0, ipc_1.default)("pip", "toggleMouse")
+    (0, channel_1.default)("pip", "toggleMouse")
 ], PIP.prototype, "toggleMouse", null);
 __decorate([
-    (0, ipc_1.default)("pip", "open")
+    (0, channel_1.default)("pip", "open")
 ], PIP.prototype, "open", null);
 exports.default = PIP;

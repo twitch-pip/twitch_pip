@@ -138,7 +138,7 @@ const createChattingWindow = function (channelName) {
         options += "&darkpopout";
     const window = new electron_1.BrowserWindow({
         width: 340,
-        height: 677,
+        height: 738,
         title: `${channelName}'s Live Chatting`,
         icon: path_1.default.join(constants_1.__public__, "images", "favicon-twitch.png"),
         autoHideMenuBar: true,
@@ -148,15 +148,6 @@ const createChattingWindow = function (channelName) {
         },
     });
     window.loadURL(`https://www.twitch.tv/embed/${channelName}/chat?parent=localhost${options}`);
-    window.webContents.setAudioMuted(true);
-    window.webContents.executeJavaScript(`
-        setInterval(() => {
-            document.querySelector('[aria-label="보너스 받기"]')?.click();
-            let point = document.querySelector('[aria-label="남은 포인트"]').innerText;
-            console.log("rewarded");
-            console.log("point:", point);
-        }, 30 * 1000);
-    `);
     chattingWindows[channelName] = window;
 };
 exports.createChattingWindow = createChattingWindow;
@@ -165,72 +156,118 @@ const createTray = function () {
     tray.setToolTip("트위치 pip");
     tray.setContextMenu(electron_1.Menu.buildFromTemplate([
         { label: "종료", type: "normal", role: "quit" },
-        { label: "PIP 창", type: "submenu", submenu: [
-                { label: "투명도 조절", type: "submenu", submenu: [
-                        { label: "10%", type: "normal", click: () => {
+        {
+            label: "PIP 창", type: "submenu", submenu: [
+                {
+                    label: "투명도 조절", type: "submenu", submenu: [
+                        {
+                            label: "10%", type: "normal", click: () => {
                                 Object.values(pipWindows).filter(x => !x.isDestroyed()).forEach((win) => win.setOpacity(.1));
-                            } },
-                        { label: "20%", type: "normal", click: () => {
+                            }
+                        },
+                        {
+                            label: "20%", type: "normal", click: () => {
                                 Object.values(pipWindows).filter(x => !x.isDestroyed()).forEach((win) => win.setOpacity(.2));
-                            } },
-                        { label: "30%", type: "normal", click: () => {
+                            }
+                        },
+                        {
+                            label: "30%", type: "normal", click: () => {
                                 Object.values(pipWindows).filter(x => !x.isDestroyed()).forEach((win) => win.setOpacity(.3));
-                            } },
-                        { label: "40%", type: "normal", click: () => {
+                            }
+                        },
+                        {
+                            label: "40%", type: "normal", click: () => {
                                 Object.values(pipWindows).filter(x => !x.isDestroyed()).forEach((win) => win.setOpacity(.4));
-                            } },
-                        { label: "50%", type: "normal", click: () => {
+                            }
+                        },
+                        {
+                            label: "50%", type: "normal", click: () => {
                                 Object.values(pipWindows).filter(x => !x.isDestroyed()).forEach((win) => win.setOpacity(.5));
-                            } },
-                        { label: "60%", type: "normal", click: () => {
+                            }
+                        },
+                        {
+                            label: "60%", type: "normal", click: () => {
                                 Object.values(pipWindows).filter(x => !x.isDestroyed()).forEach((win) => win.setOpacity(.6));
-                            } },
-                        { label: "70%", type: "normal", click: () => {
+                            }
+                        },
+                        {
+                            label: "70%", type: "normal", click: () => {
                                 Object.values(pipWindows).filter(x => !x.isDestroyed()).forEach((win) => win.setOpacity(.7));
-                            } },
-                        { label: "80%", type: "normal", click: () => {
+                            }
+                        },
+                        {
+                            label: "80%", type: "normal", click: () => {
                                 Object.values(pipWindows).filter(x => !x.isDestroyed()).forEach((win) => win.setOpacity(.8));
-                            } },
-                        { label: "90%", type: "normal", click: () => {
+                            }
+                        },
+                        {
+                            label: "90%", type: "normal", click: () => {
                                 Object.values(pipWindows).filter(x => !x.isDestroyed()).forEach((win) => win.setOpacity(.9));
-                            } },
-                        { label: "100%", type: "normal", click: () => {
+                            }
+                        },
+                        {
+                            label: "100%", type: "normal", click: () => {
                                 Object.values(pipWindows).filter(x => !x.isDestroyed()).forEach((win) => win.setOpacity(1));
-                            } },
-                    ] },
-                { label: "소리 조절", type: "submenu", submenu: [
-                        { label: "10%", type: "normal", click: () => {
+                            }
+                        },
+                    ]
+                },
+                {
+                    label: "소리 조절", type: "submenu", submenu: [
+                        {
+                            label: "10%", type: "normal", click: () => {
                                 Object.values(pipWindows).filter(x => !x.isDestroyed()).forEach((win) => win.webContents.send("setVolume", .1));
-                            } },
-                        { label: "20%", type: "normal", click: () => {
+                            }
+                        },
+                        {
+                            label: "20%", type: "normal", click: () => {
                                 Object.values(pipWindows).filter(x => !x.isDestroyed()).forEach((win) => win.webContents.send("setVolume", .2));
-                            } },
-                        { label: "30%", type: "normal", click: () => {
+                            }
+                        },
+                        {
+                            label: "30%", type: "normal", click: () => {
                                 Object.values(pipWindows).filter(x => !x.isDestroyed()).forEach((win) => win.webContents.send("setVolume", .3));
-                            } },
-                        { label: "40%", type: "normal", click: () => {
+                            }
+                        },
+                        {
+                            label: "40%", type: "normal", click: () => {
                                 Object.values(pipWindows).filter(x => !x.isDestroyed()).forEach((win) => win.webContents.send("setVolume", .4));
-                            } },
-                        { label: "50%", type: "normal", click: () => {
+                            }
+                        },
+                        {
+                            label: "50%", type: "normal", click: () => {
                                 Object.values(pipWindows).filter(x => !x.isDestroyed()).forEach((win) => win.webContents.send("setVolume", .5));
-                            } },
-                        { label: "60%", type: "normal", click: () => {
+                            }
+                        },
+                        {
+                            label: "60%", type: "normal", click: () => {
                                 Object.values(pipWindows).filter(x => !x.isDestroyed()).forEach((win) => win.webContents.send("setVolume", .6));
-                            } },
-                        { label: "70%", type: "normal", click: () => {
+                            }
+                        },
+                        {
+                            label: "70%", type: "normal", click: () => {
                                 Object.values(pipWindows).filter(x => !x.isDestroyed()).forEach((win) => win.webContents.send("setVolume", .7));
-                            } },
-                        { label: "80%", type: "normal", click: () => {
+                            }
+                        },
+                        {
+                            label: "80%", type: "normal", click: () => {
                                 Object.values(pipWindows).filter(x => !x.isDestroyed()).forEach((win) => win.webContents.send("setVolume", .8));
-                            } },
-                        { label: "90%", type: "normal", click: () => {
+                            }
+                        },
+                        {
+                            label: "90%", type: "normal", click: () => {
                                 Object.values(pipWindows).filter(x => !x.isDestroyed()).forEach((win) => win.webContents.send("setVolume", .9));
-                            } },
-                        { label: "100%", type: "normal", click: () => {
+                            }
+                        },
+                        {
+                            label: "100%", type: "normal", click: () => {
                                 Object.values(pipWindows).filter(x => !x.isDestroyed()).forEach((win) => win.webContents.send("setVolume", 1));
-                            } },
-                    ] }
-            ] },
+                            }
+                        },
+                    ]
+                }
+            ]
+        },
     ]));
     tray.on("click", () => mainWindow || createMainWindow());
 };

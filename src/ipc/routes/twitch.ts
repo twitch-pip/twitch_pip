@@ -1,7 +1,7 @@
 import { channel } from "diagnostics_channel";
 import { app, BrowserWindow, IpcMainInvokeEvent } from "electron";
 import { __store__ } from "../../constants";
-import Channel from "../ipc";
+import Channel from "../channel";
 
 export default class Twitch {
     @Channel("twitch", "streamerStates")

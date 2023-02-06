@@ -1,5 +1,5 @@
 import { app } from "electron";
-import Channel from "../ipc";
+import Channel from "../channel";
 
 export default class App {
     @Channel("app", "getVersion")

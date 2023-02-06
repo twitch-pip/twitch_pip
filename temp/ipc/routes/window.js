@@ -10,7 +10,7 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 };
 Object.defineProperty(exports, "__esModule", { value: true });
 const electron_1 = require("electron");
-const ipc_1 = __importDefault(require("../ipc"));
+const channel_1 = __importDefault(require("../channel"));
 class Window {
     close(event, ...args) {
         const window = electron_1.BrowserWindow.fromWebContents(event.sender);
@@ -32,12 +32,12 @@ class Window {
     }
 }
 __decorate([
-    (0, ipc_1.default)("window", "close")
+    (0, channel_1.default)("window", "close")
 ], Window.prototype, "close", null);
 __decorate([
-    (0, ipc_1.default)("window", "minimize")
+    (0, channel_1.default)("window", "minimize")
 ], Window.prototype, "minimize", null);
 __decorate([
-    (0, ipc_1.default)("window", "maximize")
+    (0, channel_1.default)("window", "maximize")
 ], Window.prototype, "maximize", null);
 exports.default = Window;

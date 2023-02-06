@@ -135,7 +135,7 @@ export const createChattingWindow = function (channelName: string) {
 
     const window = new BrowserWindow({
         width: 340,
-        height: 677,
+        height: 738,
         title: `${channelName}'s Live Chatting`,
         icon: path.join(__public__, "images", "favicon-twitch.png"),
         autoHideMenuBar: true,
@@ -145,17 +145,6 @@ export const createChattingWindow = function (channelName: string) {
         },
     });
     window.loadURL(`https://www.twitch.tv/embed/${channelName}/chat?parent=localhost${options}`);
-
-    if (__store__.get("auto-point", false)) {
-        window.webContents.executeJavaScript(`
-            setInterval(() => {
-                document.querySelector('[aria-label="보너스 받기"]')?.click();
-                let point = document.querySelector('[aria-label="남은 포인트"]').innerText;
-                console.log("rewarded");
-                console.log("point:", point);
-            }, 30 * 1000);
-        `);
-    }
 
     chattingWindows[channelName] = window;
 }

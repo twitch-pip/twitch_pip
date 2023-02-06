@@ -1,7 +1,7 @@
 import { app, IpcMainInvokeEvent } from "electron";
 import { createPIPWindow } from "../../app";
 import twitch from "twitch-m3u8";
-import Channel from "../ipc";
+import Channel from "../channel";
 
 export default class PIP {
     @Channel("pip", "toggleMouse")

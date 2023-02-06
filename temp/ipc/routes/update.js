@@ -19,7 +19,7 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 };
 Object.defineProperty(exports, "__esModule", { value: true });
 const electron_updater_1 = require("electron-updater");
-const ipc_1 = __importDefault(require("../ipc"));
+const channel_1 = __importDefault(require("../channel"));
 class Update {
     install(event, ...args) {
         return __awaiter(this, void 0, void 0, function* () {
@@ -28,6 +28,6 @@ class Update {
     }
 }
 __decorate([
-    (0, ipc_1.default)("update", "install")
+    (0, channel_1.default)("update", "install")
 ], Update.prototype, "install", null);
 exports.default = Update;
